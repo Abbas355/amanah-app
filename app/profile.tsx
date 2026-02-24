@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   backRowLabel: {
-    fontFamily: FONT_SEMIBOLD,
+    fontFamily: FONT_DEFAULT,
     fontSize: 15,
     color: '#111827',
   },
