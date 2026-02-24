@@ -21,6 +21,8 @@ export type FormInputProps = TextInputProps & {
   editable?: boolean;
   helperText?: string;
   helperColor?: string;
+  /** On Android, center the placeholder vertically (use for ********* style placeholders only) */
+  centerPasswordPlaceholder?: boolean;
 };
 
 export function FormInput({
@@ -35,6 +37,7 @@ export function FormInput({
   editable = true,
   helperText,
   helperColor,
+  centerPasswordPlaceholder = false,
   style,
   ...rest
 }: FormInputProps) {
@@ -56,7 +59,7 @@ export function FormInput({
             styles.input,
             showRightIcon && styles.inputWithIcon,
             isCalendar && styles.inputCalendar,
-            Platform.OS === 'android' && secureTextEntry && styles.inputPasswordAndroid,
+            Platform.OS === 'android' && centerPasswordPlaceholder && styles.inputPasswordAndroid,
             style,
           ]}
           {...rest}

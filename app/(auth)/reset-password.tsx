@@ -89,7 +89,7 @@ export default function ResetPasswordScreen() {
             isPasswordVisible={showNewPassword}
             onPasswordToggle={() => setShowNewPassword(!showNewPassword)}
             autoCapitalize="none"
-            style={{ textAlignVertical: 'center' }}
+            centerPasswordPlaceholder
           />
           <FormInput
             label="Repeat New Password"
@@ -103,7 +103,7 @@ export default function ResetPasswordScreen() {
             isPasswordVisible={showRepeatPassword}
             onPasswordToggle={() => setShowRepeatPassword(!showRepeatPassword)}
             autoCapitalize="none"
-            style={{ textAlignVertical: 'center' }}
+            centerPasswordPlaceholder
           />
         </View>
 
