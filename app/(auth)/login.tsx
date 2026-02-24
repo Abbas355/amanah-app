@@ -332,13 +332,18 @@ const styles = StyleSheet.create({
   storeBadges: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
     gap: 12,
     marginTop: 48,
     paddingBottom: 16,
+    width: '100%',
   },
   storeBadgeButton: {
-    width: 140,
+    flex: 1,
+    maxWidth: 160,
     height: 48,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
   storeBadge: {
     width: '100%',

@@ -7,12 +7,12 @@ import { Image } from 'expo-image';
 import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -294,12 +294,17 @@ const styles = StyleSheet.create({
   storeBadges: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
     gap: 12,
     paddingBottom: 16,
+    width: '100%',
   },
   storeBadgeButton: {
-    width: 140,
+    flex: 1,
+    maxWidth: 160,
     height: 48,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
   storeBadge: {
     width: '100%',
