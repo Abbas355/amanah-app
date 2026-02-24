@@ -1,13 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
-import { Image, Modal, Pressable, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, Modal, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
-import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
+import { FONT_DEFAULT } from '@/constants/fonts';
 
 const BRAND_BLUE = '#60A5FA';
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 type ImageUploadSheetProps = {
   visible: boolean;
@@ -135,7 +136,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     paddingTop: 12,
     paddingHorizontal: 24,
-    minHeight: 400,
+    minHeight: SCREEN_HEIGHT * 0.75,
+    maxHeight: SCREEN_HEIGHT * 0.9,
   },
   handle: {
     width: 40,
@@ -152,18 +154,19 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   content: {
-    gap: 24,
+    flex: 1,
   },
   uploadArea: {
+    flex: 1,
     borderWidth: 1.5,
-    borderColor: '#E5E7EB',
+    borderColor: '#9CA3AF',
     borderStyle: 'dashed',
     borderRadius: 16,
     padding: 32,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
-    minHeight: 300,
+    marginBottom: 24, // Space below
   },
   uploadIconCircle: {
     marginBottom: 8,
@@ -183,7 +186,7 @@ const styles = StyleSheet.create({
   },
   uploadButton: {
     backgroundColor: BRAND_BLUE,
-    height: 48,
+    height: 40,
     borderRadius: 999,
     width: '100%',
     alignItems: 'center',
@@ -196,13 +199,14 @@ const styles = StyleSheet.create({
   },
   // Preview Styles
   previewContainer: {
-    height: 300,
+    flex: 1,
     borderRadius: 16,
     overflow: 'hidden',
     position: 'relative',
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#9CA3AF',
     borderStyle: 'dashed',
+    marginBottom: 24, // Space below
   },
   previewImage: {
     width: '100%',
@@ -230,25 +234,35 @@ const styles = StyleSheet.create({
   },
   actionTextBlue: {
     fontFamily: FONT_DEFAULT,
-    fontSize: 14,
+    fontSize: 13,
     color: BRAND_BLUE,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
   changeButton: {
     borderWidth: 1,
     borderColor: BRAND_BLUE,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    height: 32,
+    paddingHorizontal: 16,
     borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   applyButton: {
     backgroundColor: BRAND_BLUE,
-    paddingVertical: 10,
-    paddingHorizontal: 32,
+    height: 32,
+    paddingHorizontal: 24,
     borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   applyButtonText: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 14,
+    fontFamily: FONT_DEFAULT,
+    fontSize: 13,
     color: '#fff',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
 });

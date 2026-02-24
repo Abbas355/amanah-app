@@ -607,15 +607,15 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: BRAND_BLUE,
+    height: 48,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
     borderRadius: 999,
     marginTop: 8,
   },
   saveButtonText: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 16,
+    fontFamily: FONT_DEFAULT,
+    fontSize: 15,
     color: '#fff',
   },
   inputBorder: {
