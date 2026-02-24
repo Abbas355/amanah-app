@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Pressable, StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
 
 import { AppText } from '@/components/app-text';
 import { FONT_DEFAULT } from '@/constants/fonts';
@@ -116,10 +116,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 0,
     fontSize: 16,
+    lineHeight: 20,
     color: '#111827',
     borderWidth: 0,
     textAlignVertical: 'center',
     includeFontPadding: false,
+    ...(Platform.OS === 'android' && {
+      paddingTop: 8,
+      paddingBottom: 0,
+    }),
   },
   inputWithIcon: {
     paddingRight: 52,
