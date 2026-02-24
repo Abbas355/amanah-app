@@ -8,6 +8,7 @@ import {
   Dimensions,
   Platform,
   Pressable,
+  Image as RNImage,
   ScrollView,
   StyleSheet,
   View,
@@ -98,7 +99,11 @@ export default function CompleteProfileScreen() {
           <View style={styles.coverWrap}>
             <AppText style={styles.coverText}>رمضان كريم</AppText>
             <Pressable style={styles.editCoverButton}>
-              <Ionicons name="pencil" size={16} color="#111827" />
+              <RNImage
+                source={require('@/assets/images/icons/edit.png')}
+                style={styles.editIcon}
+                resizeMode="contain"
+              />
             </Pressable>
           </View>
           
@@ -340,19 +345,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#fff',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#111827',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#F3F4F6',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+  },
+  editIcon: {
+    width: 20,
+    height: 20,
+    tintColor: '#111827',
   },
   profileRow: {
     flexDirection: 'row',
@@ -432,8 +437,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   gaugeContainer: {
-    width: 140,
-    height: 140,
+    width: 180,
+    height: 180,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
@@ -441,9 +446,9 @@ const styles = StyleSheet.create({
   },
   gaugeTrack: {
     position: 'absolute',
-    width: 140,
-    height: 140,
-    borderRadius: 70,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
     borderWidth: 10,
     borderColor: '#EBF5FF',
     borderBottomColor: 'transparent',
@@ -451,9 +456,9 @@ const styles = StyleSheet.create({
   },
   gaugeProgress: {
     position: 'absolute',
-    width: 140,
-    height: 140,
-    borderRadius: 70,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
     borderWidth: 10,
     borderColor: 'transparent',
     borderLeftColor: BRAND_BLUE,
@@ -468,7 +473,7 @@ const styles = StyleSheet.create({
   gaugeLabelLeft: {
     position: 'absolute',
     bottom: 0,
-    left: 30,
+    left: 40,
     fontSize: 12,
     color: '#9CA3AF',
     fontFamily: FONT_DEFAULT,
@@ -476,7 +481,7 @@ const styles = StyleSheet.create({
   gaugeLabelRight: {
     position: 'absolute',
     bottom: 0,
-    right: 30,
+    right: 40,
     fontSize: 12,
     color: '#9CA3AF',
     fontFamily: FONT_DEFAULT,
