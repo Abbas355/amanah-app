@@ -8,7 +8,9 @@ export default function VideosScreen() {
   return (
     <View style={styles.container}>
       <AppText style={styles.title}>Videos</AppText>
-      <AppText style={styles.subtitle}>Current active section</AppText>
+      <View style={styles.tag}>
+        <AppText style={styles.tagText}>Under Development</AppText>
+      </View>
     </View>
   );
 }
@@ -31,5 +33,19 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#9CA3AF',
     marginTop: 8,
+  },
+  tag: {
+    backgroundColor: '#FEF2F2',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: '#FEE2E2',
+  },
+  tagText: {
+    fontSize: 12,
+    fontFamily: FONT_SEMIBOLD,
+    color: '#EF4444',
   },
 });

@@ -1,6 +1,5 @@
-import { Image } from 'expo-image';
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/app-text';
 import { FONT_SEMIBOLD } from '@/constants/fonts';
@@ -9,7 +8,9 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <AppText style={styles.title}>Home</AppText>
-      <AppText style={styles.subtitle}>Current active section</AppText>
+      <View style={styles.tag}>
+        <AppText style={styles.tagText}>Under Development</AppText>
+      </View>
     </View>
   );
 }
@@ -32,5 +33,19 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#9CA3AF',
     marginTop: 8,
+  },
+  tag: {
+    backgroundColor: '#FEF2F2',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: '#FEE2E2',
+  },
+  tagText: {
+    fontSize: 12,
+    fontFamily: FONT_SEMIBOLD,
+    color: '#EF4444',
   },
 });
