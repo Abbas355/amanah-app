@@ -404,11 +404,13 @@ const styles = StyleSheet.create({
   },
   nameInfo: {
     flex: 1,
+    justifyContent: 'center',
+    minHeight: 56,
   },
   nameRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 12,
   },
   userName: {
     fontFamily: FONT_SEMIBOLD,
@@ -418,12 +420,13 @@ const styles = StyleSheet.create({
   verifiedBadge: {
     width: 20,
     height: 20,
+    alignSelf: 'center',
   },
   userHandle: {
     fontFamily: FONT_DEFAULT,
     fontSize: 14,
     color: '#9CA3AF',
-    marginTop: 2,
+    marginTop: -2,
   },
   uploadButton: {
     height: 48,

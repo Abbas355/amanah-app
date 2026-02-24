@@ -87,23 +87,29 @@ export default function ProfileScreen() {
               <AppText style={styles.coverText}>رمضان كريم</AppText>
             </View>
 
-            {/* User Info Bar */}
+            {/* User Info Bar: PFP + name + @handle */}
             <View style={styles.userBar}>
               <View style={styles.userAvatarWrap}>
                 <Image source={{ uri: PROFILE_IMAGE }} style={styles.userAvatar} contentFit="cover" />
               </View>
               <View style={styles.userInfo}>
-                <View style={styles.nameRow}>
-                  <AppText style={styles.userName}>Erza Bilalli</AppText>
-                  <RNImage
-                    source={require('@/assets/images/verified.png')}
-                    style={styles.verifiedBadge}
-                    resizeMode="contain"
-                  />
+                <View style={styles.nameHandleWrap}>
+                  <View style={styles.nameRow}>
+                    <AppText style={styles.userName}>Erza Bilalli</AppText>
+                    <RNImage
+                      source={require('@/assets/images/verified.png')}
+                      style={styles.verifiedBadge}
+                      resizeMode="contain"
+                    />
+                  </View>
+                  <AppText style={styles.userHandle}>@Erzabbb</AppText>
                 </View>
-                <AppText style={styles.userHandle}>@Erzabbb</AppText>
-                <AppText style={styles.followStats}>21 Followers | 40 Following</AppText>
               </View>
+            </View>
+
+            {/* Followers / Following below PFP and names */}
+            <View style={styles.followStatsRow}>
+              <AppText style={styles.followStats}>21 Followers | 40 Following</AppText>
             </View>
 
             <Pressable style={styles.primaryButton} onPress={() => router.push('/complete-profile')}>
@@ -338,10 +344,14 @@ const styles = StyleSheet.create({
   userInfo: {
     flex: 1,
   },
+  nameHandleWrap: {
+    height: 56,
+    justifyContent: 'center',
+  },
   nameRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 12,
   },
   userName: {
     fontFamily: FONT_SEMIBOLD,
@@ -351,18 +361,22 @@ const styles = StyleSheet.create({
   verifiedBadge: {
     width: 20,
     height: 20,
+    alignSelf: 'center',
   },
   userHandle: {
     fontFamily: FONT_DEFAULT,
     fontSize: 14,
     color: '#9CA3AF',
-    marginTop: 2,
+    marginTop: -2,
+  },
+  followStatsRow: {
+    marginTop: 8,
+    marginBottom: 16,
   },
   followStats: {
-    fontFamily: FONT_SEMIBOLD,
+    fontFamily: FONT_DEFAULT,
     fontSize: 13,
     color: '#111827',
-    marginTop: 4,
   },
   primaryButton: {
     height: 48,
