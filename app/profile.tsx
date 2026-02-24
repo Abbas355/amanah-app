@@ -31,17 +31,12 @@ const CARD_WIDTH = Math.min(300, SCREEN_WIDTH - H_PAD * 2 - 24);
 function EmptyChannelState() {
   return (
     <View style={styles.emptyState}>
-      <View style={styles.emptyStateCircle}>
-        <View style={styles.emptyStateCard}>
-          <View style={styles.emptyStateIconWrap}>
-            <RNImage
-              source={require('@/assets/images/icons/channel.png')}
-              style={styles.emptyStateIcon}
-            />
-          </View>
-          <View style={styles.emptyStateBar1} />
-          <View style={styles.emptyStateBar2} />
-        </View>
+      <View style={styles.emptyStateImageWrap}>
+        <RNImage
+          source={require('@/assets/images/no_channel.png')}
+          style={styles.emptyStateImage}
+          resizeMode="contain"
+        />
       </View>
       <AppText style={styles.emptyStateTitle}>You Haven't Started Your Channel Yet</AppText>
       <AppText style={styles.emptyStateSubtitle}>
@@ -92,28 +87,27 @@ export default function ProfileScreen() {
 
             {/* User Info Bar */}
             <View style={styles.userBar}>
-            <View style={styles.userAvatarWrap}>
-              <Image source={{ uri: PROFILE_IMAGE }} style={styles.userAvatar} contentFit="cover" />
-            </View>
-            <View style={styles.userInfo}>
-              <View style={styles.nameRow}>
-                <AppText style={styles.userName}>Erza Bilalli</AppText>
-                <View style={styles.verifiedBadge}>
-                  <Ionicons name="checkmark" size={14} color="#fff" />
-                </View>
+              <View style={styles.userAvatarWrap}>
+                <Image source={{ uri: PROFILE_IMAGE }} style={styles.userAvatar} contentFit="cover" />
               </View>
-              <AppText style={styles.userHandle}>@Erzabbb</AppText>
+              <View style={styles.userInfo}>
+                <View style={styles.nameRow}>
+                  <AppText style={styles.userName}>Erza Bilalli</AppText>
+                  <View style={styles.verifiedBadge}>
+                    <Ionicons name="checkmark" size={10} color="#fff" />
+                  </View>
+                </View>
+                <AppText style={styles.userHandle}>@Erzabbb</AppText>
+                <AppText style={styles.followStats}>21 Followers | 40 Following</AppText>
+              </View>
             </View>
-          </View>
 
-          <AppText style={styles.followStats}>21 Followers | 40 Following</AppText>
-
-          <Pressable style={styles.primaryButton}>
-            <AppText style={styles.primaryButtonText} numberOfLines={1}>
-              Complete your Profile
-            </AppText>
-            <Ionicons name="chevron-forward" size={20} color="#fff" style={styles.primaryButtonIcon} />
-          </Pressable>
+            <Pressable style={styles.primaryButton}>
+              <AppText style={styles.primaryButtonText} numberOfLines={1}>
+                Complete your Profile
+              </AppText>
+              <Ionicons name="arrow-forward" size={20} color="#fff" style={styles.primaryButtonIcon} />
+            </Pressable>
 
           <View style={styles.bioBlock}>
             <AppText style={styles.bioText}>In remembrance of Allah, hearts find peace 🌙🕋</AppText>
@@ -126,6 +120,10 @@ export default function ProfileScreen() {
         {/* HOME tab content - share box & AI bar */}
         {profileTab === 'HOME' && (
           <View style={styles.homeSection}>
+            <AppText style={styles.shareTitle}>
+              Feel free to share{'\n'}your thoughts
+            </AppText>
+
             <View style={styles.shareBox}>
               <View style={styles.shareIconWrap}>
                 <Ionicons name="link-outline" size={24} color="#9CA3AF" />
@@ -380,9 +378,9 @@ const styles = StyleSheet.create({
   },
   followStats: {
     fontFamily: FONT_SEMIBOLD,
-    fontSize: 15,
+    fontSize: 13,
     color: '#111827',
-    marginBottom: 16,
+    marginTop: 4,
   },
   primaryButton: {
     height: 48,
@@ -425,6 +423,13 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 24,
     gap: 24,
+  },
+  shareTitle: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 28,
+    color: '#111827',
+    marginBottom: 16,
+    lineHeight: 34,
   },
   shareBox: {
     flexDirection: 'row',
@@ -593,53 +598,16 @@ const styles = StyleSheet.create({
     paddingVertical: 48,
     paddingHorizontal: 24,
   },
-  emptyStateCircle: {
-    width: 192,
-    height: 192,
-    borderRadius: 96,
-    backgroundColor: '#F1F5F9',
-    opacity: 0.6,
-    alignItems: 'center',
-    justifyContent: 'center',
+  emptyStateImageWrap: {
+    width: 200,
+    height: 200,
     marginBottom: 24,
-  },
-  emptyStateCard: {
-    width: 112,
-    height: 144,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#F9FAFB',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
-    gap: 6,
   },
-  emptyStateIconWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: BRAND_BLUE,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  emptyStateIcon: {
-    width: 24,
-    height: 24,
-    tintColor: '#fff',
-  },
-  emptyStateBar1: {
-    width: 40,
-    height: 6,
-    backgroundColor: '#EBF5FF',
-    borderRadius: 3,
-  },
-  emptyStateBar2: {
-    width: 24,
-    height: 6,
-    backgroundColor: '#EBF5FF',
-    borderRadius: 3,
+  emptyStateImage: {
+    width: '100%',
+    height: '100%',
   },
   emptyStateTitle: {
     fontFamily: FONT_SEMIBOLD,
