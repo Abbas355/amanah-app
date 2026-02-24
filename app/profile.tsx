@@ -111,7 +111,7 @@ export default function ProfileScreen() {
               </View>
             </View>
 
-            <Pressable style={styles.primaryButton}>
+            <Pressable style={styles.primaryButton} onPress={() => router.push('/complete-profile')}>
               <AppText style={styles.primaryButtonText} numberOfLines={1}>
                 Complete your Profile
               </AppText>
