@@ -5,16 +5,17 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Dimensions,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    View,
+  Dimensions,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
+import { DashboardHeader } from '@/components/dashboard-header';
 import { FormInput } from '@/components/form-input';
 import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
 
@@ -35,7 +36,7 @@ const STATUS_OPTIONS = [
 export default function CompleteProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  
+
   const [firstName, setFirstName] = useState('Erza');
   const [lastName, setLastName] = useState('Bilalli');
   const [email, setEmail] = useState('erzabilallil@gmail.com');
@@ -76,16 +77,7 @@ export default function CompleteProfileScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#111827" />
-        </Pressable>
-        <AppText style={styles.headerTitle}>My Profile</AppText>
-        <Pressable style={styles.bellButton}>
-          <Ionicons name="notifications-outline" size={24} color="#111827" />
-        </Pressable>
-      </View>
+      <DashboardHeader />
 
       <ScrollView 
         contentContainerStyle={styles.scrollContent}
@@ -96,8 +88,10 @@ export default function CompleteProfileScreen() {
           locations={[0, 0.4, 0.75]}
           style={styles.gradient}
         />
-        {/* My Profile label above card */}
-        <AppText style={styles.profileLabel}>My Personal Profile</AppText>
+        <Pressable onPress={() => router.back()} style={styles.backRow}>
+          <Ionicons name="chevron-back" size={20} color="#111827" />
+          <AppText style={styles.backRowLabel}>My Personal Profile</AppText>
+        </Pressable>
 
         {/* Cover & Profile Section */}
         <View style={styles.topSection}>
@@ -286,32 +280,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
+  backRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    gap: 4,
+    marginTop: 20,
+    marginBottom: 16,
+    paddingHorizontal: 24,
+    alignSelf: 'flex-start',
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontFamily: FONT_DEFAULT,
-    fontSize: 17,
+  backRowLabel: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 15,
     color: '#111827',
-  },
-  bellButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   scrollContent: {
     paddingBottom: 24,
@@ -326,14 +307,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',
-  },
-  profileLabel: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 15,
-    color: '#111827',
-    marginTop: 20,
-    marginBottom: 16,
-    paddingHorizontal: 24, // H_PAD equivalent
   },
   topSection: {
     marginBottom: 24,
@@ -568,6 +541,11 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 999,
     marginTop: 8,
+  },
+  saveButtonText: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 16,
+    color: '#fff',
   },
   inputBorder: {
     borderWidth: 1,

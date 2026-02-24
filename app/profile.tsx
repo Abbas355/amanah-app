@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
+import { DashboardHeader } from '@/components/dashboard-header';
 import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
 
 const BRAND_BLUE = '#60A5FA';
@@ -63,16 +64,8 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      {/* App bar - solid, no gradient */}
-      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#111827" />
-        </Pressable>
-        <AppText style={styles.headerTitle}>My Profile</AppText>
-        <View style={styles.headerRight} />
-      </View>
+      <DashboardHeader />
 
-      {/* Content area: gradient starts below app bar */}
       <View style={styles.contentWrap}>
         <ScrollView
           style={styles.scroll}
@@ -84,8 +77,10 @@ export default function ProfileScreen() {
             locations={[0, 0.4, 0.75]}
             style={styles.gradient}
           />
-          {/* My Profile label above card */}
-          <AppText style={styles.profileLabel}>My Profile</AppText>
+          <Pressable onPress={() => router.back()} style={styles.backRow}>
+            <Ionicons name="chevron-back" size={20} color="#111827" />
+            <AppText style={styles.backRowLabel}>My Profile</AppText>
+          </Pressable>
           <View style={styles.section}>
             {/* Cover Card */}
             <View style={styles.coverWrap}>
@@ -275,42 +270,24 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     overflow: 'hidden',
   },
-  header: {
+  backRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-    backgroundColor: '#fff',
+    gap: 4,
+    marginTop: 20,
+    marginBottom: 16,
+    paddingHorizontal: H_PAD,
+    alignSelf: 'flex-start',
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontFamily: FONT_DEFAULT,
-    fontSize: 17,
+  backRowLabel: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 15,
     color: '#111827',
   },
   headerTitleWhite: {
     fontFamily: FONT_SEMIBOLD,
     fontSize: 17,
     color: '#fff',
-  },
-  profileLabel: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 15,
-    color: '#111827',
-    marginTop: 20,
-    marginBottom: 16,
-    paddingHorizontal: H_PAD,
-  },
-  headerRight: {
-    width: 40,
   },
   scroll: {
     flex: 1,
