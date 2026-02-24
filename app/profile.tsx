@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Pressable,
@@ -51,8 +51,15 @@ function EmptyChannelState() {
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ initialTab?: ProfileTab }>();
   const insets = useSafeAreaInsets();
-  const [profileTab, setProfileTab] = useState<ProfileTab>('HOME');
+  const [profileTab, setProfileTab] = useState<ProfileTab>(params.initialTab || 'HOME');
+
+  useEffect(() => {
+    if (params.initialTab && PROFILE_TABS.includes(params.initialTab)) {
+      setProfileTab(params.initialTab);
+    }
+  }, [params.initialTab]);
 
   return (
     <View style={styles.container}>

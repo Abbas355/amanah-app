@@ -16,11 +16,11 @@ export function ProfileMenuSheet({ visible, onClose }: ProfileMenuSheetProps) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  const handleNavigation = (route: string) => {
+  const handleNavigation = (route: string, params?: any) => {
     onClose();
     // Small delay to allow modal to close before navigating
     setTimeout(() => {
-      router.push(route as any);
+      router.push({ pathname: route as any, params });
     }, 300);
   };
 
@@ -54,7 +54,10 @@ export function ProfileMenuSheet({ visible, onClose }: ProfileMenuSheetProps) {
               <Ionicons name="checkmark" size={20} color="#3B82F6" />
             </Pressable>
 
-            <Pressable style={styles.menuItem} onPress={onClose}>
+            <Pressable 
+              style={styles.menuItem} 
+              onPress={() => handleNavigation('/profile', { initialTab: 'MY CHANNEL' })}
+            >
               <AppText style={styles.menuText}>My Channel</AppText>
             </Pressable>
 
@@ -66,7 +69,10 @@ export function ProfileMenuSheet({ visible, onClose }: ProfileMenuSheetProps) {
               <AppText style={styles.menuText}>Support</AppText>
             </Pressable>
 
-            <Pressable style={styles.menuItem} onPress={onClose}>
+            <Pressable 
+              style={styles.menuItem} 
+              onPress={() => handleNavigation('/profile', { initialTab: 'CHANNEL ANALYTICS' })}
+            >
               <AppText style={styles.menuText}>Channel Analytics</AppText>
             </Pressable>
 
