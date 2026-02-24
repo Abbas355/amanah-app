@@ -1,5 +1,6 @@
+import { Image } from 'expo-image';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/app-text';
 import { FONT_SEMIBOLD } from '@/constants/fonts';

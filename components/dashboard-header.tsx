@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, Image as RNImage, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
@@ -29,8 +29,11 @@ export function DashboardHeader() {
       </View>
 
       <Pressable style={styles.bellButton}>
-        <Ionicons name="notifications-outline" size={20} color="#374151" />
-        <View style={styles.badge} />
+        <RNImage
+          source={require('@/assets/images/icons/bell.png')}
+          style={styles.bellIcon}
+          resizeMode="contain"
+        />
       </Pressable>
     </View>
   );
@@ -94,22 +97,16 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: '#F3F4F6',
+    borderColor: '#111827',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
-  badge: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#60A5FA',
-    borderWidth: 2,
-    borderColor: '#fff',
+  bellIcon: {
+    width: 20,
+    height: 20,
+    tintColor: '#111827',
   },
 });
