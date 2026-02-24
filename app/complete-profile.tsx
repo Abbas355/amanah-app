@@ -130,8 +130,14 @@ export default function CompleteProfileScreen() {
           <AppText style={styles.cardTitle}>Complete your Profile</AppText>
           
           <View style={styles.chartContainer}>
-            <View style={styles.chartCircle}>
-              <AppText style={styles.chartPercent}>60%</AppText>
+            <View style={styles.gaugeContainer}>
+              <View style={styles.gaugeTrack} />
+              <View style={styles.gaugeProgress} />
+              <View style={styles.gaugeCenter}>
+                <AppText style={styles.chartPercent}>60%</AppText>
+              </View>
+              <AppText style={styles.gaugeLabelLeft}>00</AppText>
+              <AppText style={styles.gaugeLabelRight}>100</AppText>
             </View>
             <AppText style={styles.chartText}>Your profile is{'\n'}completed 60%</AppText>
           </View>
@@ -425,24 +431,60 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
-  chartCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 6,
-    borderColor: '#EBF5FF', // Light blue background for chart
+  gaugeContainer: {
+    width: 140,
+    height: 140,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
-    borderTopColor: BRAND_BLUE, // Fake progress
-    borderRightColor: BRAND_BLUE, // Fake progress
-    transform: [{ rotate: '-45deg' }], // Rotate to make it look like 60%
+    marginBottom: 8,
+    position: 'relative',
+  },
+  gaugeTrack: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 10,
+    borderColor: '#EBF5FF',
+    borderBottomColor: 'transparent',
+    // No rotation needed for gap at bottom
+  },
+  gaugeProgress: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 10,
+    borderColor: 'transparent',
+    borderLeftColor: BRAND_BLUE,
+    borderTopColor: BRAND_BLUE,
+    // No rotation needed to start at 225 deg
+  },
+  gaugeCenter: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gaugeLabelLeft: {
+    position: 'absolute',
+    bottom: 0,
+    left: 30,
+    fontSize: 12,
+    color: '#9CA3AF',
+    fontFamily: FONT_DEFAULT,
+  },
+  gaugeLabelRight: {
+    position: 'absolute',
+    bottom: 0,
+    right: 30,
+    fontSize: 12,
+    color: '#9CA3AF',
+    fontFamily: FONT_DEFAULT,
   },
   chartPercent: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 24,
+    fontFamily: FONT_DEFAULT,
+    fontSize: 32,
     color: '#111827',
-    transform: [{ rotate: '45deg' }], // Counter rotate text
   },
   chartText: {
     fontFamily: FONT_DEFAULT,
