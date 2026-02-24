@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -60,12 +61,17 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
+      <LinearGradient
+        colors={[BRAND_BLUE, 'rgba(96,165,250,0.4)', 'transparent']}
+        locations={[0, 0.35, 0.7]}
+        style={styles.gradient}
+      />
       {/* Header with back */}
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#111827" />
+          <Ionicons name="arrow-back" size={24} color="#fff" />
         </Pressable>
-        <AppText style={styles.headerTitle}>My Profile</AppText>
+        <AppText style={styles.headerTitleWhite}>My Profile</AppText>
         <View style={styles.headerRight} />
       </View>
 
@@ -238,6 +244,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  gradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: 320,
+    zIndex: 0,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -245,8 +259,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-    backgroundColor: '#fff',
+    borderBottomColor: 'rgba(243,244,246,0.8)',
+    backgroundColor: 'transparent',
+    zIndex: 1,
   },
   backButton: {
     width: 40,
@@ -259,11 +274,17 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: '#111827',
   },
+  headerTitleWhite: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 17,
+    color: '#fff',
+  },
   headerRight: {
     width: 40,
   },
   scroll: {
     flex: 1,
+    zIndex: 1,
   },
   scrollContent: {
     paddingBottom: 40,
