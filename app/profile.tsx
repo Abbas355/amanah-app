@@ -398,6 +398,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#fff',
     textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
     flex: 1,
   },
   primaryButtonIcon: {
@@ -506,7 +508,7 @@ const styles = StyleSheet.create({
   },
   tab: {
     paddingHorizontal: 24,
-    paddingVertical: 14,
+    height: 40,
     borderRadius: 999,
     backgroundColor: '#F1F5F9',
     alignItems: 'center',
@@ -520,6 +522,8 @@ const styles = StyleSheet.create({
     fontFamily: FONT_SEMIBOLD,
     color: '#9CA3AF',
     textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
   tabTextActive: {
     fontFamily: FONT_SEMIBOLD,

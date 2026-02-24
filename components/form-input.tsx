@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Platform, Pressable, StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
 
 import { AppText } from '@/components/app-text';
 import { FONT_DEFAULT } from '@/constants/fonts';
@@ -55,8 +55,6 @@ export function FormInput({
           style={[
             styles.input,
             showRightIcon && styles.inputWithIcon,
-            Platform.OS === 'android' && styles.inputAndroid,
-            secureTextEntry && styles.inputPassword,
             isCalendar && styles.inputCalendar,
             style,
           ]}
@@ -118,22 +116,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 0,
     fontSize: 16,
-    lineHeight: 20,
     color: '#111827',
     borderWidth: 0,
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
   inputWithIcon: {
     paddingRight: 52,
   },
   inputCalendar: {
     paddingRight: 52,
-  },
-  inputPassword: {
-    paddingVertical: 16,
-  },
-  inputAndroid: {
-    textAlignVertical: 'center',
-    includeFontPadding: false,
   },
   iconWrapper: {
     position: 'absolute',
