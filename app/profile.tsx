@@ -126,33 +126,36 @@ export default function ProfileScreen() {
         {/* HOME tab content - share box & AI bar */}
         {profileTab === 'HOME' && (
           <View style={styles.homeSection}>
-            <AppText style={styles.shareTitle}>Feel free to share your thoughts</AppText>
-
             <View style={styles.shareBox}>
               <View style={styles.shareIconWrap}>
-                <AppText style={styles.shareIconEmoji}>🔗</AppText>
+                <Ionicons name="link-outline" size={24} color="#9CA3AF" />
               </View>
               <AppText style={styles.shareHint} numberOfLines={1}>
                 Insights, reflections, and ideas are welcome
               </AppText>
               <Pressable style={styles.shareMic}>
-                <Ionicons name="mic-outline" size={20} color="#9CA3AF" />
+                <Ionicons name="mic-outline" size={24} color="#9CA3AF" />
               </Pressable>
               <Pressable style={styles.shareSend}>
-                <Ionicons name="arrow-up" size={22} color={BRAND_BLUE} />
+                <Ionicons name="arrow-up" size={24} color="#fff" />
               </Pressable>
             </View>
 
-            <View style={styles.aiBar}>
-              <AppText style={styles.aiBarText} numberOfLines={1}>
+            <LinearGradient
+              colors={['#1e3a8a', '#3b82f6']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.aiBar}
+            >
+              <AppText style={styles.aiBarText} numberOfLines={2}>
                 Need inspiration? Let AI help you craft the perfect post
               </AppText>
               <Pressable style={styles.aiBarButton}>
-                <Ionicons name="sparkles" size={14} color="#fff" />
+                <Ionicons name="sparkles" size={14} color="#FDE047" />
                 <AppText style={styles.aiBarButtonText}>Generate Ideas</AppText>
-                <Ionicons name="chevron-forward" size={14} color="#fff" />
+                <Ionicons name="arrow-forward" size={16} color="#fff" />
               </Pressable>
-            </View>
+            </LinearGradient>
           </View>
         )}
 
@@ -417,43 +420,36 @@ const styles = StyleSheet.create({
   },
   homeSection: {
     paddingHorizontal: H_PAD,
-    paddingTop: 32,
+    paddingTop: 24,
     paddingBottom: 24,
     gap: 24,
-  },
-  shareTitle: {
-    fontFamily: FONT_DEFAULT,
-    fontSize: 32,
-    color: '#111827',
   },
   shareBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    borderRadius: 32,
-    padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 999,
+    padding: 6,
     borderWidth: 1,
-    borderColor: '#F9FAFB',
-    gap: 12,
+    borderColor: '#E5E7EB',
+    gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   shareIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#fff',
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#F3F4F6',
-  },
-  shareIconEmoji: {
-    fontFamily: FONT_DEFAULT,
-    fontSize: 18,
+    marginLeft: 4,
   },
   shareHint: {
     fontFamily: FONT_DEFAULT,
     flex: 1,
-    fontSize: 13,
+    fontSize: 14,
     color: '#9CA3AF',
   },
   shareMic: {
@@ -463,7 +459,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: BRAND_BLUE,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -471,27 +467,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: BRAND_BLUE,
     borderRadius: 999,
-    paddingVertical: 4,
-    paddingLeft: 24,
-    paddingRight: 16,
+    paddingVertical: 10,
+    paddingLeft: 20,
+    paddingRight: 8,
     gap: 12,
   },
   aiBarText: {
     fontFamily: FONT_DEFAULT,
     flex: 1,
-    fontSize: 11,
+    fontSize: 12,
     color: '#fff',
-    opacity: 0.9,
+    opacity: 0.95,
+    lineHeight: 18,
   },
   aiBarButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 6,
     backgroundColor: 'rgba(255,255,255,0.2)',
     paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     borderRadius: 999,
   },
   aiBarButtonText: {
@@ -513,6 +509,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 999,
     backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tabActive: {
     backgroundColor: BRAND_BLUE,
@@ -521,6 +519,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: FONT_SEMIBOLD,
     color: '#9CA3AF',
+    textAlign: 'center',
   },
   tabTextActive: {
     fontFamily: FONT_SEMIBOLD,
