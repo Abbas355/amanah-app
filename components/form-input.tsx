@@ -56,6 +56,7 @@ export function FormInput({
             styles.input,
             showRightIcon && styles.inputWithIcon,
             isCalendar && styles.inputCalendar,
+            Platform.OS === 'android' && secureTextEntry && styles.inputPasswordAndroid,
             style,
           ]}
           {...rest}
@@ -116,15 +117,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 0,
     fontSize: 16,
-    lineHeight: 20,
     color: '#111827',
     borderWidth: 0,
     textAlignVertical: 'center',
     includeFontPadding: false,
-    ...(Platform.OS === 'android' && {
-      paddingTop: 8,
-      paddingBottom: 0,
-    }),
+  },
+  inputPasswordAndroid: {
+    paddingTop: 8,
+    paddingBottom: 0,
+    lineHeight: 20,
   },
   inputWithIcon: {
     paddingRight: 52,
