@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Pressable, Image as RNImage, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,14 +9,15 @@ import { AppText } from '@/components/app-text';
 import { FONT_SEMIBOLD } from '@/constants/fonts';
 
 const PROFILE_IMAGE =
-  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop';
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop';
 
 export function DashboardHeader() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   return (
     <View style={[styles.header, { paddingTop: 16 + insets.top }]}>
-      <View style={styles.left}>
+      <Pressable style={styles.left} onPress={() => router.push('/profile')}>
         <View style={styles.avatarWrap}>
           <Image source={{ uri: PROFILE_IMAGE }} style={styles.avatar} contentFit="cover" />
         </View>
@@ -26,7 +28,7 @@ export function DashboardHeader() {
           </View>
           <AppText style={styles.userName}>Erza</AppText>
         </View>
-      </View>
+      </Pressable>
 
       <Pressable style={styles.bellButton}>
         <RNImage
