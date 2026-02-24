@@ -8,7 +8,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <AppText style={styles.title}>Home</AppText>
-      <AppText style={styles.subtitle}>Your feed will appear here.</AppText>
+      <AppText style={styles.subtitle}>Current active section</AppText>
     </View>
   );
 }
@@ -17,17 +17,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 24,
-    paddingTop: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontFamily: FONT_SEMIBOLD,
-    fontSize: 24,
-    color: '#000',
+    fontSize: 36,
+    color: '#1F2937',
+    textTransform: 'capitalize',
   },
   subtitle: {
     fontSize: 16,
-    color: '#6B7280',
+    fontWeight: '500',
+    color: '#9CA3AF',
     marginTop: 8,
   },
 });

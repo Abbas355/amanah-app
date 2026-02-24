@@ -1,0 +1,115 @@
+import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import React from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { AppText } from '@/components/app-text';
+import { FONT_SEMIBOLD } from '@/constants/fonts';
+
+const PROFILE_IMAGE =
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop';
+
+export function DashboardHeader() {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View style={[styles.header, { paddingTop: 16 + insets.top }]}>
+      <View style={styles.left}>
+        <View style={styles.avatarWrap}>
+          <Image source={{ uri: PROFILE_IMAGE }} style={styles.avatar} contentFit="cover" />
+        </View>
+        <View style={styles.welcomeWrap}>
+          <View style={styles.welcomeRow}>
+            <AppText style={styles.welcomeLabel}>Welcome</AppText>
+            <Ionicons name="chevron-forward" size={14} color="#9CA3AF" />
+          </View>
+          <AppText style={styles.userName}>Erza</AppText>
+        </View>
+      </View>
+
+      <Pressable style={styles.bellButton}>
+        <Ionicons name="notifications-outline" size={20} color="#374151" />
+        <View style={styles.badge} />
+      </Pressable>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingBottom: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F9FAFB',
+  },
+  left: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  avatarWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: '#fff',
+    backgroundColor: '#F3F4F6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  avatar: {
+    width: '100%',
+    height: '100%',
+  },
+  welcomeWrap: {
+    flexDirection: 'column',
+    gap: 0,
+  },
+  welcomeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  welcomeLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#9CA3AF',
+  },
+  userName: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 15,
+    color: '#111827',
+    marginTop: -2,
+  },
+  bellButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#60A5FA',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+});

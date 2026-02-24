@@ -4,10 +4,10 @@ import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/app-text';
 import { FONT_SEMIBOLD } from '@/constants/fonts';
 
-export default function ExploreScreen() {
+export default function ChannelsScreen() {
   return (
     <View style={styles.container}>
-      <AppText style={styles.title}>Explore</AppText>
+      <AppText style={styles.title}>Channels</AppText>
       <AppText style={styles.subtitle}>Current active section</AppText>
     </View>
   );
