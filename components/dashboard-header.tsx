@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, Image as RNImage, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
+import { ProfileMenuSheet } from '@/components/profile-menu-sheet';
 import { FONT_SEMIBOLD } from '@/constants/fonts';
 
 const PROFILE_IMAGE =
@@ -14,30 +15,38 @@ const PROFILE_IMAGE =
 export function DashboardHeader() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   return (
-    <View style={[styles.header, { paddingTop: 16 + insets.top }]}>
-      <Pressable style={styles.left} onPress={() => router.push('/profile')}>
-        <View style={styles.avatarWrap}>
-          <Image source={{ uri: PROFILE_IMAGE }} style={styles.avatar} contentFit="cover" />
-        </View>
-        <View style={styles.welcomeWrap}>
-          <View style={styles.welcomeRow}>
-            <AppText style={styles.welcomeLabel}>Welcome</AppText>
-            <Ionicons name="chevron-forward" size={14} color="#9CA3AF" />
+    <>
+      <View style={[styles.header, { paddingTop: 16 + insets.top }]}>
+        <Pressable style={styles.left} onPress={() => setIsMenuVisible(true)}>
+          <View style={styles.avatarWrap}>
+            <Image source={{ uri: PROFILE_IMAGE }} style={styles.avatar} contentFit="cover" />
           </View>
-          <AppText style={styles.userName}>Erza</AppText>
-        </View>
-      </Pressable>
+          <View style={styles.welcomeWrap}>
+            <View style={styles.welcomeRow}>
+              <AppText style={styles.welcomeLabel}>Welcome</AppText>
+              <Ionicons name="chevron-forward" size={14} color="#9CA3AF" />
+            </View>
+            <AppText style={styles.userName}>Erza</AppText>
+          </View>
+        </Pressable>
 
-      <Pressable style={styles.bellButton}>
-        <RNImage
-          source={require('@/assets/images/icons/bell.png')}
-          style={styles.bellIcon}
-          resizeMode="contain"
-        />
-      </Pressable>
-    </View>
+        <Pressable style={styles.bellButton}>
+          <RNImage
+            source={require('@/assets/images/icons/bell.png')}
+            style={styles.bellIcon}
+            resizeMode="contain"
+          />
+        </Pressable>
+      </View>
+
+      <ProfileMenuSheet 
+        visible={isMenuVisible} 
+        onClose={() => setIsMenuVisible(false)} 
+      />
+    </>
   );
 }
 
