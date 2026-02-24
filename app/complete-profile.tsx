@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -90,6 +91,14 @@ export default function CompleteProfileScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        <LinearGradient
+          colors={['rgba(96,165,250,0.35)', 'rgba(96,165,250,0.15)', 'transparent']}
+          locations={[0, 0.4, 0.75]}
+          style={styles.gradient}
+        />
+        {/* My Profile label above card */}
+        <AppText style={styles.profileLabel}>My Personal Profile</AppText>
+
         {/* Cover & Profile Section */}
         <View style={styles.topSection}>
           <View style={styles.coverWrap}>
@@ -123,7 +132,7 @@ export default function CompleteProfileScreen() {
         </View>
 
         {/* Completion Card */}
-        <View style={styles.completionCard}>
+        <View style={[styles.completionCard, { marginHorizontal: 24 }]}>
           <AppText style={styles.cardTitle}>Complete your Profile</AppText>
           
           <View style={styles.chartContainer}>
@@ -152,7 +161,7 @@ export default function CompleteProfileScreen() {
         </View>
 
         {/* Personal Info Form */}
-        <View style={styles.formSection}>
+        <View style={[styles.formSection, { marginHorizontal: 24 }]}>
           <AppText style={styles.sectionTitle}>Personal Info</AppText>
           <FormInput 
             label="First Name" 
@@ -201,7 +210,7 @@ export default function CompleteProfileScreen() {
         </View>
 
         {/* Education Form */}
-        <View style={styles.formSection}>
+        <View style={[styles.formSection, { marginHorizontal: 24 }]}>
           <AppText style={styles.sectionTitle}>Education</AppText>
           <FormInput 
             label="University / School" 
@@ -220,7 +229,7 @@ export default function CompleteProfileScreen() {
         </View>
 
         {/* Professional Position Form */}
-        <View style={styles.formSection}>
+        <View style={[styles.formSection, { marginHorizontal: 24 }]}>
           <AppText style={styles.sectionTitle}>Professional Position</AppText>
           <FormInput 
             label="Position" 
@@ -239,7 +248,7 @@ export default function CompleteProfileScreen() {
         </View>
 
         {/* Status Section */}
-        <View style={styles.formSection}>
+        <View style={[styles.formSection, { marginHorizontal: 24 }]}>
           <AppText style={styles.sectionTitle}>Your Status</AppText>
           <View style={styles.statusGrid}>
             {STATUS_OPTIONS.map((status) => {
@@ -262,7 +271,7 @@ export default function CompleteProfileScreen() {
           </View>
         </View>
 
-        <Pressable style={styles.saveButton} onPress={() => router.back()}>
+        <Pressable style={[styles.saveButton, { marginHorizontal: 24 }]} onPress={() => router.back()}>
           <AppText style={styles.saveButtonText}>Save</AppText>
         </Pressable>
 
@@ -275,7 +284,7 @@ export default function CompleteProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB', // Light gray background for the whole screen
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
@@ -283,19 +292,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingBottom: 12,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
   },
   backButton: {
     width: 40,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
-    backgroundColor: '#fff',
   },
   headerTitle: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 16,
+    fontFamily: FONT_DEFAULT,
+    fontSize: 17,
     color: '#111827',
   },
   bellButton: {
@@ -303,26 +312,43 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
-    backgroundColor: '#fff',
   },
   scrollContent: {
-    paddingHorizontal: 24,
     paddingBottom: 24,
+  },
+  gradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: 380,
+    zIndex: 0,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: 'hidden',
+  },
+  profileLabel: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 15,
+    color: '#111827',
+    marginTop: 20,
+    marginBottom: 16,
+    paddingHorizontal: 24, // H_PAD equivalent
   },
   topSection: {
     marginBottom: 24,
+    paddingHorizontal: 24, // H_PAD equivalent
   },
   coverWrap: {
     width: '100%',
-    height: 160,
-    backgroundColor: '#F3F4F6',
+    aspectRatio: 16 / 9,
+    backgroundColor: '#fff',
     borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: -30, // Overlap
-    borderWidth: 1,
-    borderColor: '#fff',
+    marginBottom: 16,
     position: 'relative',
   },
   coverText: {
@@ -333,42 +359,43 @@ const styles = StyleSheet.create({
   },
   editCoverButton: {
     position: 'absolute',
-    bottom: 40, // Adjusted because of overlap
+    bottom: 16,
     right: 16,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
   },
   profileRow: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
-    paddingHorizontal: 12,
+    alignItems: 'center',
+    gap: 12,
     marginBottom: 20,
   },
   avatarWrap: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    borderWidth: 3,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    overflow: 'hidden',
+    borderWidth: 2,
     borderColor: '#fff',
     backgroundColor: '#F3F4F6',
-    overflow: 'hidden',
-    marginRight: 12,
   },
   avatar: {
     width: '100%',
     height: '100%',
   },
   nameInfo: {
-    paddingBottom: 8,
+    flex: 1,
   },
   nameRow: {
     flexDirection: 'row',
@@ -381,13 +408,14 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   verifiedBadge: {
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
   },
   userHandle: {
     fontFamily: FONT_DEFAULT,
     fontSize: 14,
     color: '#9CA3AF',
+    marginTop: 2,
   },
   uploadButton: {
     backgroundColor: BRAND_BLUE,
