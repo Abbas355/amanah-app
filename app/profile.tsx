@@ -14,7 +14,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
-import { FONT_SEMIBOLD } from '@/constants/fonts';
+import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
 
 const BRAND_BLUE = '#60A5FA';
 const PROFILE_IMAGE = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop';
@@ -61,34 +61,37 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={[BRAND_BLUE, 'rgba(96,165,250,0.4)', 'transparent']}
-        locations={[0, 0.35, 0.7]}
-        style={styles.gradient}
-      />
-      {/* Header with back */}
+      {/* App bar - solid, no gradient */}
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Ionicons name="arrow-back" size={24} color="#111827" />
         </Pressable>
-        <AppText style={styles.headerTitleWhite}>My Profile</AppText>
+        <AppText style={styles.headerTitle}>My Profile</AppText>
         <View style={styles.headerRight} />
       </View>
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Profile Header Section */}
-        <View style={styles.section}>
-          {/* Cover Image Area */}
-          <View style={styles.coverWrap}>
-            <AppText style={styles.coverText}>رمضان كريم</AppText>
-          </View>
+      {/* Content area: gradient starts below app bar */}
+      <View style={styles.contentWrap}>
+        <LinearGradient
+          colors={['rgba(96,165,250,0.35)', 'rgba(96,165,250,0.15)', 'transparent']}
+          locations={[0, 0.4, 0.75]}
+          style={styles.gradient}
+        />
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* My Profile label above card */}
+          <AppText style={styles.profileLabel}>My Profile</AppText>
+          <View style={styles.section}>
+            {/* Cover Card */}
+            <View style={styles.coverWrap}>
+              <AppText style={styles.coverText}>رمضان كريم</AppText>
+            </View>
 
-          {/* User Info Bar */}
-          <View style={styles.userBar}>
+            {/* User Info Bar */}
+            <View style={styles.userBar}>
             <View style={styles.userAvatarWrap}>
               <Image source={{ uri: PROFILE_IMAGE }} style={styles.userAvatar} contentFit="cover" />
             </View>
@@ -106,8 +109,10 @@ export default function ProfileScreen() {
           <AppText style={styles.followStats}>21 Followers | 40 Following</AppText>
 
           <Pressable style={styles.primaryButton}>
-            <AppText style={styles.primaryButtonText}>Complete your Profile</AppText>
-            <Ionicons name="chevron-forward" size={20} color="#fff" />
+            <AppText style={styles.primaryButtonText} numberOfLines={1}>
+              Complete your Profile
+            </AppText>
+            <Ionicons name="chevron-forward" size={20} color="#fff" style={styles.primaryButtonIcon} />
           </Pressable>
 
           <View style={styles.bioBlock}>
@@ -116,7 +121,7 @@ export default function ProfileScreen() {
             <AppText style={styles.bioMeta}>Married</AppText>
             <AppText style={styles.bioMeta}>+383 44 999 211</AppText>
           </View>
-        </View>
+          </View>
 
         {/* HOME tab content - share box & AI bar */}
         {profileTab === 'HOME' && (
@@ -234,7 +239,8 @@ export default function ProfileScreen() {
             <EmptyChannelState />
           )}
         </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -244,13 +250,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  contentWrap: {
+    flex: 1,
+    position: 'relative',
+  },
   gradient: {
     position: 'absolute',
     left: 0,
     right: 0,
     top: 0,
-    height: 320,
+    height: 300,
     zIndex: 0,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',
@@ -259,9 +272,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(243,244,246,0.8)',
-    backgroundColor: 'transparent',
-    zIndex: 1,
+    borderBottomColor: '#F3F4F6',
+    backgroundColor: '#fff',
   },
   backButton: {
     width: 40,
@@ -270,7 +282,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerTitle: {
-    fontFamily: FONT_SEMIBOLD,
+    fontFamily: FONT_DEFAULT,
     fontSize: 17,
     color: '#111827',
   },
@@ -278,6 +290,14 @@ const styles = StyleSheet.create({
     fontFamily: FONT_SEMIBOLD,
     fontSize: 17,
     color: '#fff',
+  },
+  profileLabel: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 15,
+    color: '#111827',
+    marginTop: 20,
+    marginBottom: 16,
+    paddingHorizontal: H_PAD,
   },
   headerRight: {
     width: 40,
@@ -291,12 +311,11 @@ const styles = StyleSheet.create({
   },
   section: {
     paddingHorizontal: H_PAD,
-    paddingTop: 16,
   },
   coverWrap: {
     width: '100%',
     aspectRatio: 16 / 9,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#fff',
     borderRadius: 24,
     borderWidth: 1,
     borderColor: '#F3F4F6',
@@ -305,6 +324,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   coverText: {
+    fontFamily: FONT_DEFAULT,
     fontSize: 28,
     color: '#9CA3AF',
     opacity: 0.8,
@@ -350,6 +370,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   userHandle: {
+    fontFamily: FONT_DEFAULT,
     fontSize: 14,
     color: '#9CA3AF',
     marginTop: 2,
@@ -361,29 +382,36 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   primaryButton: {
-    height: 56,
+    height: 48,
     backgroundColor: BRAND_BLUE,
-    borderRadius: 16,
+    borderRadius: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
     marginBottom: 16,
   },
   primaryButtonText: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 16,
+    fontFamily: FONT_DEFAULT,
+    fontSize: 15,
     color: '#fff',
+    textAlign: 'center',
+    flex: 1,
+  },
+  primaryButtonIcon: {
+    position: 'absolute',
+    right: 16,
   },
   bioBlock: {
     gap: 4,
   },
   bioText: {
+    fontFamily: FONT_DEFAULT,
     fontSize: 15,
     color: '#6B7280',
     marginBottom: 4,
   },
   bioMeta: {
+    fontFamily: FONT_DEFAULT,
     fontSize: 15,
     color: '#9CA3AF',
   },
@@ -394,8 +422,8 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   shareTitle: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 28,
+    fontFamily: FONT_DEFAULT,
+    fontSize: 32,
     color: '#111827',
   },
   shareBox: {
@@ -419,9 +447,11 @@ const styles = StyleSheet.create({
     borderColor: '#F3F4F6',
   },
   shareIconEmoji: {
+    fontFamily: FONT_DEFAULT,
     fontSize: 18,
   },
   shareHint: {
+    fontFamily: FONT_DEFAULT,
     flex: 1,
     fontSize: 13,
     color: '#9CA3AF',
@@ -449,6 +479,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   aiBarText: {
+    fontFamily: FONT_DEFAULT,
     flex: 1,
     fontSize: 11,
     color: '#fff',
@@ -492,6 +523,7 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
   },
   tabTextActive: {
+    fontFamily: FONT_SEMIBOLD,
     color: '#fff',
   },
   tabContent: {
@@ -522,11 +554,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
   },
   videoCardTitle: {
-    fontFamily: FONT_SEMIBOLD,
+    fontFamily: FONT_DEFAULT,
     fontSize: 18,
     color: '#111827',
   },
   videoCardDesc: {
+    fontFamily: FONT_DEFAULT,
     fontSize: 13,
     color: '#6B7280',
     lineHeight: 20,
@@ -541,15 +574,15 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   statNum: {
+    fontFamily: FONT_DEFAULT,
     fontSize: 13,
-    fontFamily: FONT_SEMIBOLD,
     fontWeight: '700',
     color: '#111827',
   },
   videoCardDate: {
+    fontFamily: FONT_DEFAULT,
     fontSize: 12,
     color: '#9CA3AF',
-    fontFamily: FONT_SEMIBOLD,
   },
   emptyState: {
     alignItems: 'center',
@@ -613,6 +646,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   emptyStateSubtitle: {
+    fontFamily: FONT_DEFAULT,
     fontSize: 13,
     color: '#9CA3AF',
     textAlign: 'center',
