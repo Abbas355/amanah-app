@@ -538,9 +538,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: '#fff',
+    backgroundColor: '#F3F4F6',
     borderWidth: 1,
-    borderColor: '#F3F4F6',
+    borderColor: 'transparent',
     gap: 8,
     minWidth: '45%',
     flex: 1,
@@ -550,8 +550,8 @@ const styles = StyleSheet.create({
     borderColor: BRAND_BLUE,
   },
   checkbox: {
-    width: 18,
-    height: 18,
+    width: 16,
+    height: 16,
     borderRadius: 4,
     borderWidth: 1.5,
     borderColor: '#9CA3AF',
@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
   },
   statusLabel: {
     fontFamily: FONT_DEFAULT,
-    fontSize: 13,
+    fontSize: 14,
     color: '#111827',
   },
   statusLabelSelected: {
