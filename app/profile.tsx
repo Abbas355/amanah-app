@@ -4,12 +4,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Dimensions,
-    Pressable,
-    Image as RNImage,
-    ScrollView,
-    StyleSheet,
-    View,
+  Dimensions,
+  Pressable,
+  Image as RNImage,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -67,16 +67,16 @@ export default function ProfileScreen() {
 
       {/* Content area: gradient starts below app bar */}
       <View style={styles.contentWrap}>
-        <LinearGradient
-          colors={['rgba(96,165,250,0.35)', 'rgba(96,165,250,0.15)', 'transparent']}
-          locations={[0, 0.4, 0.75]}
-          style={styles.gradient}
-        />
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
+          <LinearGradient
+            colors={['rgba(96,165,250,0.35)', 'rgba(96,165,250,0.15)', 'transparent']}
+            locations={[0, 0.4, 0.75]}
+            style={styles.gradient}
+          />
           {/* My Profile label above card */}
           <AppText style={styles.profileLabel}>My Profile</AppText>
           <View style={styles.section}>
@@ -93,9 +93,11 @@ export default function ProfileScreen() {
               <View style={styles.userInfo}>
                 <View style={styles.nameRow}>
                   <AppText style={styles.userName}>Erza Bilalli</AppText>
-                  <View style={styles.verifiedBadge}>
-                    <Ionicons name="checkmark" size={10} color="#fff" />
-                  </View>
+                  <RNImage
+                    source={require('@/assets/images/verified.png')}
+                    style={styles.verifiedBadge}
+                    resizeMode="contain"
+                  />
                 </View>
                 <AppText style={styles.userHandle}>@Erzabbb</AppText>
                 <AppText style={styles.followStats}>21 Followers | 40 Following</AppText>
@@ -260,7 +262,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    height: 300,
+    height: 580,
     zIndex: 0,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -363,12 +365,8 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   verifiedBadge: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: '#EAB308',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 20,
+    height: 20,
   },
   userHandle: {
     fontFamily: FONT_DEFAULT,
@@ -610,32 +608,40 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   emptyStateTitle: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 20,
-    color: '#111827',
+    fontFamily: FONT_DEFAULT,
+    fontWeight: '500',
+    fontSize: 18,
+    color: '#000',
     marginBottom: 8,
     textAlign: 'center',
+    lineHeight: 26,
   },
   emptyStateSubtitle: {
     fontFamily: FONT_DEFAULT,
     fontSize: 13,
     color: '#9CA3AF',
     textAlign: 'center',
-    marginBottom: 32,
-    maxWidth: 280,
+    marginBottom: 24,
+    maxWidth: 240,
+    lineHeight: 18,
   },
   emptyStateButton: {
     width: '100%',
-    maxWidth: 280,
-    paddingVertical: 16,
-    borderWidth: 2,
+    maxWidth: 240,
+    height: 44,
+    borderWidth: 1.5,
     borderColor: BRAND_BLUE,
     borderRadius: 999,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   emptyStateButtonText: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 16,
+    fontFamily: FONT_DEFAULT,
+    fontWeight: '500',
+    fontSize: 15,
     color: BRAND_BLUE,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
 });
