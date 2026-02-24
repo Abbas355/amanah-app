@@ -391,17 +391,17 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   uploadButton: {
+    height: 48,
     backgroundColor: BRAND_BLUE,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
     borderRadius: 999,
     gap: 8,
   },
   uploadButtonText: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 14,
+    fontFamily: FONT_DEFAULT,
+    fontSize: 15,
     color: '#fff',
   },
   completionCard: {
