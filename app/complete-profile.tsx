@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/app-text';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { FormInput } from '@/components/form-input';
+import { ImageUploadSheet } from '@/components/image-upload-sheet';
 import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
 
 const BRAND_BLUE = '#60A5FA';
@@ -51,6 +52,15 @@ export default function CompleteProfileScreen() {
   const [company, setCompany] = useState('');
   
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+  const [uploadSheet, setUploadSheet] = useState<{ visible: boolean; type: 'cover' | 'profile' }>({
+    visible: false,
+    type: 'cover',
+  });
+
+  const handleImageSelected = (uri: string) => {
+    console.log('Selected image:', uri, 'for', uploadSheet.type);
+    // Here you would typically upload the image or update local state
+  };
 
   const handleDateChange = (event: { type: string }, selected?: Date) => {
     if (Platform.OS === 'android') {
@@ -98,7 +108,10 @@ export default function CompleteProfileScreen() {
         <View style={styles.topSection}>
           <View style={styles.coverWrap}>
             <AppText style={styles.coverText}>رمضان كريم</AppText>
-            <Pressable style={styles.editCoverButton}>
+            <Pressable 
+              style={styles.editCoverButton}
+              onPress={() => setUploadSheet({ visible: true, type: 'cover' })}
+            >
               <RNImage
                 source={require('@/assets/images/icons/edit.png')}
                 style={styles.editIcon}
@@ -124,7 +137,10 @@ export default function CompleteProfileScreen() {
             </View>
           </View>
 
-          <Pressable style={styles.uploadButton}>
+          <Pressable 
+            style={styles.uploadButton}
+            onPress={() => setUploadSheet({ visible: true, type: 'profile' })}
+          >
             <AppText style={styles.uploadButtonText}>Upload new photo</AppText>
             <Ionicons name="arrow-forward" size={18} color="#fff" />
           </Pressable>
@@ -282,6 +298,14 @@ export default function CompleteProfileScreen() {
 
         <View style={{ height: insets.bottom + 20 }} />
       </ScrollView>
+      
+      <ImageUploadSheet
+        visible={uploadSheet.visible}
+        onClose={() => setUploadSheet(prev => ({ ...prev, visible: false }))}
+        onImageSelected={handleImageSelected}
+        title={uploadSheet.type === 'cover' ? 'Change your cover' : 'Change your profile photo'}
+        uploadText={uploadSheet.type === 'cover' ? 'Click below and upload your Cover' : 'Click below and upload your Profile Photo'}
+      />
     </View>
   );
 }
@@ -313,7 +337,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    height: 380,
+    height: 580,
     zIndex: 0,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
