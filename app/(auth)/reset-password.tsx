@@ -3,7 +3,7 @@ import { BrandLogo } from '@/components/brand-logo';
 import { FormInput } from '@/components/form-input';
 import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
 import { Image } from 'expo-image';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import {
     KeyboardAvoidingView,
@@ -18,11 +18,42 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const BRAND_COLOR = '#5FA0FA';
 const INPUT_BG = '#F3F4F6';
 const SUCCESS_GREEN = '#4ADE80';
+const ERROR_RED = '#EF4444';
 
 export default function ResetPasswordScreen() {
   const insets = useSafeAreaInsets();
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const newPasswordHelper =
+    newPassword.length === 0
+      ? undefined
+      : newPassword.length < 8
+        ? { text: 'Must be 8 characters', color: '#6B7280' }
+        : undefined;
+
+  const repeatPasswordHelper =
+    repeatPassword.length === 0
+      ? undefined
+      : repeatPassword !== newPassword
+        ? { text: 'Passwords must match', color: ERROR_RED }
+        : { text: 'Your passwords match', color: SUCCESS_GREEN };
+
+  const isValid = newPassword.length >= 8 && newPassword === repeatPassword;
+
+  const handleSubmit = () => {
+    setSubmitError(null);
+    if (!isValid) {
+      if (newPassword.length < 8) setSubmitError('Password must be at least 8 characters');
+      else if (newPassword !== repeatPassword) setSubmitError('Passwords do not match');
+      return;
+    }
+    console.log('Reset password form submitted:', { newPassword, repeatPassword });
+    router.replace('/(auth)/login');
+  };
 
   return (
     <KeyboardAvoidingView
@@ -49,8 +80,10 @@ export default function ResetPasswordScreen() {
           <FormInput
             label="New Password"
             placeholder="**********"
-            helperText="Must be 8 Characters"
-            helperColor="#111827"
+            value={newPassword}
+            onChangeText={(t) => { setNewPassword(t); setSubmitError(null); }}
+            helperText={newPasswordHelper?.text}
+            helperColor={newPasswordHelper?.color}
             secureTextEntry
             showPasswordToggle
             isPasswordVisible={showNewPassword}
@@ -60,8 +93,10 @@ export default function ResetPasswordScreen() {
           <FormInput
             label="Repeat New Password"
             placeholder="**********"
-            helperText="Your Password Matchs"
-            helperColor={SUCCESS_GREEN}
+            value={repeatPassword}
+            onChangeText={(t) => { setRepeatPassword(t); setSubmitError(null); }}
+            helperText={repeatPasswordHelper?.text}
+            helperColor={repeatPasswordHelper?.color}
             secureTextEntry
             showPasswordToggle
             isPasswordVisible={showRepeatPassword}
@@ -70,30 +105,31 @@ export default function ResetPasswordScreen() {
           />
         </View>
 
-        <Link href="/(auth)/login" asChild>
-          <Pressable style={styles.primaryButton}>
-            <AppText style={styles.primaryButtonText}>Log In</AppText>
-          </Pressable>
-        </Link>
+        {submitError ? <AppText style={styles.submitErrorText}>{submitError}</AppText> : null}
+        <Pressable style={styles.primaryButton} onPress={handleSubmit}>
+          <AppText style={styles.primaryButtonText}>Log In</AppText>
+        </Pressable>
       </ScrollView>
 
       {/* Bottom Section - fixed at bottom */}
       <View style={[styles.bottomSection, { paddingBottom: 40 + insets.bottom }]}>
         <View style={styles.storeBadges}>
-          <Pressable>
+          <Pressable style={styles.storeBadgeButton}>
             <Image
               source={{
                 uri: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg',
               }}
               style={styles.storeBadge}
+              contentFit="contain"
             />
           </Pressable>
-          <Pressable>
+          <Pressable style={styles.storeBadgeButton}>
             <Image
               source={{
                 uri: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg',
               }}
               style={styles.storeBadge}
+              contentFit="contain"
             />
           </Pressable>
         </View>
@@ -138,6 +174,14 @@ const styles = StyleSheet.create({
     marginTop: 24,
     gap: 20,
   },
+  submitErrorText: {
+    fontSize: 14,
+    color: ERROR_RED,
+    width: '100%',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 4,
+  },
   helperText: {
     fontSize: 14,
     fontWeight: '500',
@@ -172,9 +216,13 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingBottom: 16,
   },
-  storeBadge: {
-    height: 48,
+  storeBadgeButton: {
     width: 140,
+    height: 48,
+  },
+  storeBadge: {
+    width: '100%',
+    height: '100%',
   },
   footer: {
     flexDirection: 'row',

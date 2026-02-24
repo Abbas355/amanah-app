@@ -18,10 +18,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const BRAND_COLOR = '#5FA0FA';
 const INPUT_BG = '#F3F4F6';
+const ERROR_RED = '#EF4444';
 
 export default function ForgotPasswordScreen() {
   const insets = useSafeAreaInsets();
+  const [email, setEmail] = useState('');
+  const [captchaInput, setCaptchaInput] = useState('');
   const [captcha, setCaptcha] = useState('Ft2h');
+  const [error, setError] = useState<string | null>(null);
 
   const refreshCaptcha = () => {
     // Simple random captcha - in production use real captcha API
@@ -58,10 +62,17 @@ export default function ForgotPasswordScreen() {
           <FormInput
             label="Email"
             placeholder="Email or phone number"
+            value={email}
+            onChangeText={(t) => { setEmail(t); setError(null); }}
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          <FormInput label="What you see Captcha" placeholder="Ft2h" />
+          <FormInput
+            label="What you see Captcha"
+            placeholder="Ft2h"
+            value={captchaInput}
+            onChangeText={(t) => { setCaptchaInput(t); setError(null); }}
+          />
 
           {/* Captcha display */}
           <View style={styles.inputGroup}>
@@ -92,9 +103,23 @@ export default function ForgotPasswordScreen() {
           </View>
         </View>
 
+        {error ? <AppText style={styles.errorText}>{error}</AppText> : null}
         <Pressable
           style={styles.primaryButton}
-          onPress={() => router.replace('/(auth)/check-email')}
+          onPress={() => {
+            setError(null);
+            const formData = { email: email.trim(), captcha: captchaInput.trim() };
+            if (!formData.email) {
+              setError('Email is required');
+              return;
+            }
+            if (!formData.captcha) {
+              setError('Captcha is required');
+              return;
+            }
+            console.log('Forgot password form submitted:', formData);
+            router.replace('/(auth)/check-email');
+          }}
         >
           <AppText style={styles.primaryButtonText}>Continue</AppText>
         </Pressable>
@@ -113,20 +138,22 @@ export default function ForgotPasswordScreen() {
       {/* Bottom Section - fixed at bottom */}
       <View style={[styles.bottomSection, { paddingBottom: 40 + insets.bottom }]}>
         <View style={styles.storeBadges}>
-          <Pressable>
+          <Pressable style={styles.storeBadgeButton}>
             <Image
               source={{
                 uri: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg',
               }}
               style={styles.storeBadge}
+              contentFit="contain"
             />
           </Pressable>
-          <Pressable>
+          <Pressable style={styles.storeBadgeButton}>
             <Image
               source={{
                 uri: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg',
               }}
               style={styles.storeBadge}
+              contentFit="contain"
             />
           </Pressable>
         </View>
@@ -177,7 +204,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT_DEFAULT,
     fontSize: 10,
     fontWeight: '500',
-    color: '#6A6A6A',
+    color: '#6B7280',
     paddingLeft: 12,
   },
   captchaRow: {
@@ -217,6 +244,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    color: ERROR_RED,
+    width: '100%',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 4,
   },
   primaryButton: {
     width: '100%',
@@ -262,9 +297,13 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingBottom: 16,
   },
-  storeBadge: {
-    height: 48,
+  storeBadgeButton: {
     width: 140,
+    height: 48,
+  },
+  storeBadge: {
+    width: '100%',
+    height: '100%',
   },
   footer: {
     flexDirection: 'row',

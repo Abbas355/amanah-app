@@ -5,7 +5,7 @@ import { Platform, Pressable, StyleSheet, TextInput, type TextInputProps, View }
 import { AppText } from '@/components/app-text';
 import { FONT_DEFAULT } from '@/constants/fonts';
 
-const LABEL_COLOR = '#6A6A6A';
+const LABEL_COLOR = '#6B7280';
 const INPUT_BG = '#EFEFEF';
 const PLACEHOLDER_COLOR = '#B2B2B2';
 
@@ -17,6 +17,8 @@ export type FormInputProps = TextInputProps & {
   isPasswordVisible?: boolean;
   onPasswordToggle?: () => void;
   rightIcon?: 'calendar' | 'password';
+  onCalendarPress?: () => void;
+  editable?: boolean;
   helperText?: string;
   helperColor?: string;
 };
@@ -29,6 +31,8 @@ export function FormInput({
   isPasswordVisible,
   onPasswordToggle,
   rightIcon,
+  onCalendarPress,
+  editable = true,
   helperText,
   helperColor,
   style,
@@ -37,6 +41,7 @@ export function FormInput({
   const showEyeToggle = secureTextEntry && showPasswordToggle;
   const isSecure = secureTextEntry && !isPasswordVisible;
   const showRightIcon = showEyeToggle || rightIcon === 'calendar';
+  const isCalendar = rightIcon === 'calendar';
 
   return (
     <View style={styles.container}>
@@ -46,10 +51,13 @@ export function FormInput({
           placeholder={placeholder}
           placeholderTextColor={PLACEHOLDER_COLOR}
           secureTextEntry={isSecure}
+          editable={!isCalendar && editable}
           style={[
             styles.input,
             showRightIcon && styles.inputWithIcon,
             Platform.OS === 'android' && styles.inputAndroid,
+            secureTextEntry && styles.inputPassword,
+            isCalendar && styles.inputCalendar,
             style,
           ]}
           {...rest}
@@ -57,7 +65,7 @@ export function FormInput({
         {showEyeToggle && (
           <Pressable
             onPress={onPasswordToggle}
-            style={styles.iconButton}
+            style={styles.iconWrapper}
             hitSlop={12}
           >
             <Ionicons
@@ -68,9 +76,13 @@ export function FormInput({
           </Pressable>
         )}
         {rightIcon === 'calendar' && !showEyeToggle && (
-          <View style={styles.iconButton} pointerEvents="none">
+          <Pressable
+            onPress={onCalendarPress}
+            style={styles.iconWrapper}
+            hitSlop={12}
+          >
             <Ionicons name="calendar-outline" size={22} color="#111827" />
-          </View>
+          </Pressable>
         )}
       </View>
       {helperText && (
@@ -95,6 +107,7 @@ const styles = StyleSheet.create({
   },
   inputWrap: {
     position: 'relative',
+    height: 52,
   },
   input: {
     fontFamily: FONT_DEFAULT,
@@ -112,15 +125,24 @@ const styles = StyleSheet.create({
   inputWithIcon: {
     paddingRight: 52,
   },
+  inputCalendar: {
+    paddingRight: 52,
+  },
+  inputPassword: {
+    paddingVertical: 16,
+  },
   inputAndroid: {
     textAlignVertical: 'center',
     includeFontPadding: false,
   },
-  iconButton: {
+  iconWrapper: {
     position: 'absolute',
-    right: 16,
-    top: '50%',
-    marginTop: -11,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: 52,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 4,
   },
   helperText: {

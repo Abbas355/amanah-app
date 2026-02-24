@@ -18,9 +18,29 @@ const BRAND_COLOR = '#5FA0FA';
 const INPUT_BG = '#F3F4F6';
 const TOGGLE_OFF = '#E5E7EB';
 
+const ERROR_RED = '#EF4444';
+
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = () => {
+    setError(null);
+    const formData = { login, password, rememberMe };
+    if (!login.trim()) {
+      setError('Email or phone number is required');
+      return;
+    }
+    if (!password.trim()) {
+      setError('Password is required');
+      return;
+    }
+    console.log('Login form submitted:', formData);
+    router.replace('/(tabs)');
+  };
 
   return (
     <KeyboardAvoidingView
@@ -44,6 +64,8 @@ export default function LoginScreen() {
           <FormInput
             label="Login"
             placeholder="Email or phone number"
+            value={login}
+            onChangeText={(t) => { setLogin(t); setError(null); }}
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="email-address"
@@ -52,6 +74,8 @@ export default function LoginScreen() {
           <FormInput
             label="Password"
             placeholder="Enter password"
+            value={password}
+            onChangeText={(t) => { setPassword(t); setError(null); }}
             secureTextEntry
             showPasswordToggle
             isPasswordVisible={showPassword}
@@ -90,9 +114,10 @@ export default function LoginScreen() {
 
         {/* Action Buttons */}
         <View style={styles.actions}>
+          {error ? <AppText style={styles.errorText}>{error}</AppText> : null}
           <Pressable
             style={styles.primaryButton}
-            onPress={() => router.replace('/(tabs)')}
+            onPress={handleSubmit}
           >
             <AppText style={styles.primaryButtonText}>Log In</AppText>
           </Pressable>
@@ -125,16 +150,18 @@ export default function LoginScreen() {
 
         {/* Store Badges */}
         <View style={styles.storeBadges}>
-          <Pressable>
+          <Pressable style={styles.storeBadgeButton}>
             <Image
               source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg' }}
               style={styles.storeBadge}
+              contentFit="contain"
             />
           </Pressable>
-          <Pressable>
+          <Pressable style={styles.storeBadgeButton}>
             <Image
               source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg' }}
               style={styles.storeBadge}
+              contentFit="contain"
             />
           </Pressable>
         </View>
@@ -228,6 +255,13 @@ const styles = StyleSheet.create({
     marginTop: 32,
     gap: 16,
   },
+  errorText: {
+    fontSize: 14,
+    color: ERROR_RED,
+    width: '100%',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
   primaryButton: {
     width: '100%',
     height: 48,
@@ -302,9 +336,13 @@ const styles = StyleSheet.create({
     marginTop: 48,
     paddingBottom: 16,
   },
-  storeBadge: {
-    height: 48,
+  storeBadgeButton: {
     width: 140,
+    height: 48,
+  },
+  storeBadge: {
+    width: '100%',
+    height: '100%',
   },
   footer: {
     flexDirection: 'row',

@@ -49,20 +49,22 @@ export default function CheckEmailScreen() {
 
         {/* Store Badges */}
         <View style={styles.storeBadges}>
-          <Pressable>
+          <Pressable style={styles.storeBadgeButton}>
             <Image
               source={{
                 uri: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg',
               }}
               style={styles.storeBadge}
+              contentFit="contain"
             />
           </Pressable>
-          <Pressable>
+          <Pressable style={styles.storeBadgeButton}>
             <Image
               source={{
                 uri: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg',
               }}
               style={styles.storeBadge}
+              contentFit="contain"
             />
           </Pressable>
         </View>
@@ -141,9 +143,13 @@ const styles = StyleSheet.create({
     marginTop: 48,
     paddingBottom: 16,
   },
-  storeBadge: {
-    height: 48,
+  storeBadgeButton: {
     width: 140,
+    height: 48,
+  },
+  storeBadge: {
+    width: '100%',
+    height: '100%',
   },
   footer: {
     flexDirection: 'row',
