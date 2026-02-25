@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import React, { useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
@@ -11,15 +11,15 @@ import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
 const BRAND_BLUE = '#60A5FA';
 
 const AVATARS = [
-  'https://ui-avatars.com/api/?name=User+1&background=random',
-  'https://ui-avatars.com/api/?name=User+2&background=random',
-  'https://ui-avatars.com/api/?name=User+3&background=random',
-  'https://ui-avatars.com/api/?name=User+4&background=random',
-  'https://ui-avatars.com/api/?name=User+5&background=random',
-  'https://ui-avatars.com/api/?name=User+6&background=random',
-  'https://ui-avatars.com/api/?name=User+7&background=random',
-  'https://ui-avatars.com/api/?name=User+8&background=random',
-  'https://ui-avatars.com/api/?name=User+9&background=random',
+  require('@/assets/images/av/av1.png'),
+  require('@/assets/images/av/av2.png'),
+  require('@/assets/images/av/av3.png'),
+  require('@/assets/images/av/av4.png'),
+  require('@/assets/images/av/av5.png'),
+  require('@/assets/images/av/av6.png'),
+  require('@/assets/images/av/av7.png'),
+  require('@/assets/images/av/av8.png'),
+  require('@/assets/images/av/av9.png'),
 ];
 
 type CreateChannelSheetProps = {
@@ -62,12 +62,14 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
           placeholder="First Name"
           value={firstName}
           onChangeText={setFirstName}
+          style={styles.inputStyle}
         />
         <FormInput
           label="Handle"
           placeholder="Handle"
           value={handle}
           onChangeText={setHandle}
+          style={styles.inputStyle}
         />
       </View>
 
@@ -106,7 +108,7 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
           <View style={styles.avatarGrid}>
             {AVATARS.map((avatar, index) => (
               <Pressable key={index} style={styles.avatarGridItem}>
-                <Image source={{ uri: avatar }} style={styles.avatarGridImage} />
+                <Image source={avatar} style={styles.avatarGridImage} contentFit="cover" />
               </Pressable>
             ))}
           </View>
@@ -149,14 +151,9 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
         <View style={[styles.sheet, { paddingTop: insets.top }]}>
           <View style={styles.handle} />
           
-          <View style={styles.header}>
-            <Pressable onPress={handleClose} style={styles.backButton}>
-               <Ionicons name="chevron-back" size={20} color="#111827" />
-               <AppText style={styles.headerTitle}>My Profile</AppText>
-            </Pressable>
-          </View>
-
-          {step === 'form' ? renderFormStep() : renderPictureStep()}
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+             {step === 'form' ? renderFormStep() : renderPictureStep()}
+          </KeyboardAvoidingView>
         </View>
       </View>
     </Modal>
@@ -187,22 +184,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 12,
     marginBottom: 12,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingBottom: 16,
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  headerTitle: {
-    fontFamily: FONT_DEFAULT,
-    fontSize: 15,
-    color: '#111827',
   },
   content: {
     paddingHorizontal: 24,
@@ -241,8 +222,8 @@ const styles = StyleSheet.create({
   },
   uploadButton: {
     backgroundColor: BRAND_BLUE,
-    borderRadius: 12,
-    height: 48,
+    borderRadius: 50,
+    height: 44,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
@@ -251,10 +232,17 @@ const styles = StyleSheet.create({
     fontFamily: FONT_SEMIBOLD,
     fontSize: 15,
     color: '#fff',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
   form: {
     gap: 16,
     marginBottom: 40,
+  },
+  inputStyle: {
+    borderWidth: 1,
+    borderColor: BRAND_BLUE,
+    backgroundColor: '#fff',
   },
   footer: {
     flexDirection: 'row',
@@ -262,30 +250,34 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    height: 48,
-    borderRadius: 24,
+    height: 44,
+    borderRadius: 50,
     borderWidth: 1,
     borderColor: '#E5E7EB',
     alignItems: 'center',
     justifyContent: 'center',
   },
   cancelButtonText: {
-    fontFamily: FONT_SEMIBOLD,
+    fontFamily: FONT_DEFAULT,
     fontSize: 15,
     color: BRAND_BLUE,
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
   createButton: {
     flex: 1,
-    height: 48,
-    borderRadius: 24,
+    height: 44,
+    borderRadius: 50,
     backgroundColor: BRAND_BLUE,
     alignItems: 'center',
     justifyContent: 'center',
   },
   createButtonText: {
-    fontFamily: FONT_SEMIBOLD,
+    fontFamily: FONT_DEFAULT,
     fontSize: 15,
     color: '#fff',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
   // Picture Step Styles
   pictureContainer: {
@@ -295,15 +287,14 @@ const styles = StyleSheet.create({
     fontFamily: FONT_DEFAULT,
     fontSize: 18,
     color: '#111827',
-    textAlign: 'center',
+    textAlign: 'left',
+    paddingHorizontal: 24,
     marginBottom: 24,
   },
   pictureTabs: {
     flexDirection: 'row',
-    backgroundColor: '#F3F4F6',
-    borderRadius: 24,
-    marginHorizontal: 24,
-    padding: 4,
+    gap: 12,
+    paddingHorizontal: 24,
     marginBottom: 24,
   },
   pictureTab: {
@@ -311,7 +302,8 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: 50,
+    backgroundColor: '#F3F4F6',
   },
   pictureTabActive: {
     backgroundColor: BRAND_BLUE,
@@ -320,6 +312,8 @@ const styles = StyleSheet.create({
     fontFamily: FONT_SEMIBOLD,
     fontSize: 13,
     color: '#6B7280',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
   pictureTabTextActive: {
     color: '#fff',
@@ -351,7 +345,7 @@ const styles = StyleSheet.create({
   },
   uploadBox: {
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#4B5563',
     borderStyle: 'dashed',
     borderRadius: 12,
     height: 300,
@@ -384,5 +378,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT_SEMIBOLD,
     fontSize: 14,
     color: '#fff',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
 });
