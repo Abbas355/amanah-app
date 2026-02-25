@@ -61,10 +61,13 @@ export default function PlaylistDetailScreen() {
                 <AppText style={styles.statText}>{PLAYLIST_DETAIL.likes}</AppText>
                 <Ionicons name="heart-outline" size={20} color="#EF4444" />
               </View>
-              <View style={styles.statItem}>
+              <Pressable 
+                style={styles.statItem}
+                onPress={() => router.push(`/playlist/videos/${id}`)}
+              >
                 <AppText style={styles.statText}>{PLAYLIST_DETAIL.comments}</AppText>
                 <Ionicons name="chatbubble-outline" size={20} color="#fff" />
-              </View>
+              </Pressable>
               <View style={styles.statItem}>
                 <AppText style={styles.statText}>{PLAYLIST_DETAIL.shares}</AppText>
                 <Ionicons name="repeat" size={20} color="#fff" />
