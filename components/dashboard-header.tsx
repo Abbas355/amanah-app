@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
 import { ProfileMenuSheet } from '@/components/profile-menu-sheet';
-import { FONT_SEMIBOLD } from '@/constants/fonts';
+import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
 
 const PROFILE_IMAGE =
   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop';
@@ -27,7 +27,7 @@ export function DashboardHeader() {
           <View style={styles.welcomeWrap}>
             <View style={styles.welcomeRow}>
               <AppText style={styles.welcomeLabel}>Welcome</AppText>
-              <Ionicons name="chevron-forward" size={14} color="#9CA3AF" />
+              <Ionicons name="chevron-forward" size={14} color="#111827" />
             </View>
             <AppText style={styles.userName}>Erza</AppText>
           </View>
@@ -94,9 +94,9 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   welcomeLabel: {
+    fontFamily: FONT_DEFAULT,
     fontSize: 13,
-    fontWeight: '500',
-    color: '#9CA3AF',
+    color: '#111827',
   },
   userName: {
     fontFamily: FONT_SEMIBOLD,

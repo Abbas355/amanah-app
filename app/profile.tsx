@@ -136,13 +136,21 @@ export default function ProfileScreen() {
 
             <View style={styles.shareBox}>
               <View style={styles.shareIconWrap}>
-                <Ionicons name="link" size={24} color="#111827" style={{ transform: [{ rotate: '-45deg' }] }} />
+                <RNImage
+                  source={require('@/assets/images/icons/url.png')}
+                  style={styles.shareUrlIcon}
+                  resizeMode="contain"
+                />
               </View>
-              <AppText style={styles.shareHint} numberOfLines={1}>
-                Insights, reflections, and ideas are welcome
+              <AppText style={styles.shareHint} numberOfLines={2}>
+                Insights, reflections, and{'\n'}ideas are welcome
               </AppText>
               <Pressable style={styles.shareMic}>
-                <Ionicons name="mic-outline" size={24} color="#111827" />
+                <RNImage
+                  source={require('@/assets/images/icons/mic.png')}
+                  style={styles.shareMicIcon}
+                  resizeMode="contain"
+                />
               </Pressable>
               <Pressable style={styles.shareSend}>
                 <Ionicons name="arrow-up" size={24} color={BRAND_BLUE} />
@@ -167,8 +175,13 @@ export default function ProfileScreen() {
           </View>
         )}
 
-        {/* Profile Tabs Switcher */}
-        <View style={styles.tabsWrap}>
+        {/* Profile Tabs Switcher - horizontally scrollable */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabsWrap}
+          style={styles.tabsScroll}
+        >
           {PROFILE_TABS.map((tab) => (
             <Pressable
               key={tab}
@@ -180,7 +193,7 @@ export default function ProfileScreen() {
               </AppText>
             </Pressable>
           ))}
-        </View>
+        </ScrollView>
 
         {/* Tab Content */}
         <View style={styles.tabContent}>
@@ -375,7 +388,8 @@ const styles = StyleSheet.create({
   },
   followStats: {
     fontFamily: FONT_DEFAULT,
-    fontSize: 13,
+    fontSize: 16,
+    fontWeight: '400',
     color: '#111827',
   },
   primaryButton: {
@@ -412,7 +426,7 @@ const styles = StyleSheet.create({
   bioMeta: {
     fontFamily: FONT_DEFAULT,
     fontSize: 15,
-    color: '#9CA3AF',
+    color: '#6B7280',
   },
   homeSection: {
     paddingHorizontal: H_PAD,
@@ -445,18 +459,30 @@ const styles = StyleSheet.create({
   shareIconWrap: {
     width: 40,
     height: 40,
+    borderRadius: 20,
+    backgroundColor: '#E5E7EB',
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 4,
   },
+  shareUrlIcon: {
+    width: 20,
+    height: 20,
+    tintColor: '#111827',
+  },
   shareHint: {
     fontFamily: FONT_DEFAULT,
     flex: 1,
-    fontSize: 14,
+    fontSize: 13,
     color: '#111827',
   },
   shareMic: {
     padding: 8,
+  },
+  shareMicIcon: {
+    width: 18,
+    height: 18,
+    tintColor: '#111827',
   },
   shareSend: {
     width: 40,
@@ -479,17 +505,17 @@ const styles = StyleSheet.create({
   aiBarText: {
     fontFamily: FONT_DEFAULT,
     flex: 1,
-    fontSize: 12,
+    fontSize: 11,
     color: '#fff',
     opacity: 0.95,
-    lineHeight: 18,
+    lineHeight: 17,
   },
   aiBarButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: BRAND_BLUE,
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 999,
@@ -502,14 +528,18 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     includeFontPadding: false,
   },
+  tabsScroll: {
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F9FAFB',
+    maxHeight: 72,
+  },
   tabsWrap: {
     flexDirection: 'row',
     paddingHorizontal: H_PAD,
     gap: 12,
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F9FAFB',
-    backgroundColor: '#fff',
+    alignItems: 'center',
   },
   tab: {
     paddingHorizontal: 24,
