@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
+import { CreateChannelSheet } from '@/components/create-channel-sheet';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { ScreenGradient } from '@/components/screen-gradient';
 import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
@@ -30,7 +31,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const H_PAD = 24;
 const CARD_WIDTH = Math.min(300, SCREEN_WIDTH - H_PAD * 2 - 24);
 
-function EmptyChannelState() {
+function EmptyChannelState({ onCreateChannel }: { onCreateChannel: () => void }) {
   return (
     <View style={styles.emptyState}>
       <View style={styles.emptyStateImageWrap}>
@@ -44,7 +45,7 @@ function EmptyChannelState() {
       <AppText style={styles.emptyStateSubtitle}>
         Start your content creator journey by creating your own channel
       </AppText>
-      <Pressable style={styles.emptyStateButton}>
+      <Pressable style={styles.emptyStateButton} onPress={onCreateChannel}>
         <AppText style={styles.emptyStateButtonText}>Start Your Channel</AppText>
       </Pressable>
     </View>
@@ -56,6 +57,7 @@ export default function ProfileScreen() {
   const params = useLocalSearchParams<{ initialTab?: ProfileTab }>();
   const insets = useSafeAreaInsets();
   const [profileTab, setProfileTab] = useState<ProfileTab>(params.initialTab || 'HOME');
+  const [isCreateChannelVisible, setIsCreateChannelVisible] = useState(false);
 
   useEffect(() => {
     if (params.initialTab && PROFILE_TABS.includes(params.initialTab)) {
@@ -257,11 +259,16 @@ export default function ProfileScreen() {
               </ScrollView>
             </View>
           ) : (
-            <EmptyChannelState />
+            <EmptyChannelState onCreateChannel={() => setIsCreateChannelVisible(true)} />
           )}
         </View>
         </ScrollView>
       </View>
+
+      <CreateChannelSheet 
+        visible={isCreateChannelVisible} 
+        onClose={() => setIsCreateChannelVisible(false)} 
+      />
     </View>
   );
 }
