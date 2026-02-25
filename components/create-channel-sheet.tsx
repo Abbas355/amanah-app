@@ -44,6 +44,7 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
         contentContainerStyle={styles.content} 
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
       >
       <AppText style={styles.heading}>Create Channel</AppText>
       <AppText style={styles.description}>
@@ -152,16 +153,17 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
       <View style={styles.overlay}>
         <Pressable style={styles.backdrop} onPress={handleClose} />
         
-        <View style={[styles.sheet, { paddingTop: insets.top }]}>
-          <View style={styles.handle} />
-          
-          <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
-            style={{ flex: 1 }}
-          >
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+          style={{ flex: 1, justifyContent: 'flex-end' }}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -100} // Negative offset to pull sheet up
+        >
+          <View style={[styles.sheet, { paddingTop: insets.top }]}>
+            <View style={styles.handle} />
+            
              {step === 'form' ? renderFormStep() : renderPictureStep()}
-          </KeyboardAvoidingView>
-        </View>
+          </View>
+        </KeyboardAvoidingView>
       </View>
     </Modal>
   );
@@ -182,6 +184,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     height: '80%', // Covers 80% of the screen
     overflow: 'hidden',
+    width: '100%',
   },
   handle: {
     width: 40,
