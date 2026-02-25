@@ -107,10 +107,11 @@ export default function ChannelsScreen() {
           <View style={styles.searchContainer}>
             <TextInput
               placeholder="Search"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor="#000"
               style={styles.searchInput}
+              textAlignVertical="center"
+              includeFontPadding={false}
             />
-            <Ionicons name="search-outline" size={20} color="#9CA3AF" style={styles.searchIcon} />
           </View>
 
           {/* Categories */}
@@ -185,10 +186,11 @@ const styles = StyleSheet.create({
   },
   headerSection: {
     paddingHorizontal: H_PAD,
+    marginTop: 20,
   },
   pageTitle: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 28, // Increased size for "Channels"
+    fontFamily: FONT_DEFAULT,
+    fontSize: 15, 
     color: '#111827',
     marginBottom: 16,
   },
@@ -196,9 +198,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 16,
+    borderRadius: 50,
     paddingHorizontal: 16,
-    height: 50,
+    height: 42,
     marginBottom: 24,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -214,6 +216,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#111827',
     height: '100%',
+    paddingVertical: 0, // Fix for Android vertical alignment
   },
   searchIcon: {
     marginLeft: 8,
