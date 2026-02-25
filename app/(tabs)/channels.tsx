@@ -132,7 +132,7 @@ export default function ChannelsScreen() {
         {/* Channel Grid */}
         <View style={styles.gridContainer}>
           {CHANNELS.map((channel) => (
-            <Pressable key={channel.id} style={styles.card}>
+            <Pressable key={channel.id} style={styles.card} onPress={() => router.push(`/channel/${channel.id}`)}>
               <Image source={{ uri: channel.image }} style={styles.cardImage} contentFit="cover" />
               
               {/* Dark Gradient Overlay for text readability */}
