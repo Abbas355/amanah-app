@@ -127,52 +127,50 @@ export default function ProfileScreen() {
           </View>
 
         {/* HOME tab content - share box & AI bar */}
-        {profileTab === 'HOME' && (
-          <View style={styles.homeSection}>
-            <AppText style={styles.shareTitle}>
-              Feel free to share{'\n'}your thoughts
-            </AppText>
+        <View style={styles.homeSection}>
+          <AppText style={styles.shareTitle}>
+            Feel free to share{'\n'}your thoughts
+          </AppText>
 
-            <View style={styles.shareBox}>
-              <View style={styles.shareIconWrap}>
-                <RNImage
-                  source={require('@/assets/images/icons/url.png')}
-                  style={styles.shareUrlIcon}
-                  resizeMode="contain"
-                />
-              </View>
-              <AppText style={styles.shareHint} numberOfLines={2}>
-                Insights, reflections, and{'\n'}ideas are welcome
-              </AppText>
-              <Pressable style={styles.shareMic}>
-                <RNImage
-                  source={require('@/assets/images/icons/mic.png')}
-                  style={styles.shareMicIcon}
-                  resizeMode="contain"
-                />
-              </Pressable>
-              <Pressable style={styles.shareSend}>
-                <Ionicons name="arrow-up" size={24} color={BRAND_BLUE} />
-              </Pressable>
+          <View style={styles.shareBox}>
+            <View style={styles.shareIconWrap}>
+              <RNImage
+                source={require('@/assets/images/icons/url.png')}
+                style={styles.shareUrlIcon}
+                resizeMode="contain"
+              />
             </View>
-
-            <LinearGradient
-              colors={['#3b82f6', '#1e3a8a']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={styles.aiBar}
-            >
-              <AppText style={styles.aiBarText} numberOfLines={2}>
-                Need inspiration? Let AI help you craft the perfect post
-              </AppText>
-              <Pressable style={styles.aiBarButton}>
-                <Ionicons name="sparkles" size={12} color="#FDE047" />
-                <AppText style={styles.aiBarButtonText}>Generate Ideas</AppText>
-                <Ionicons name="arrow-forward" size={14} color="#fff" />
-              </Pressable>
-            </LinearGradient>
+            <AppText style={styles.shareHint} numberOfLines={2}>
+              Insights, reflections, and{'\n'}ideas are welcome
+            </AppText>
+            <Pressable style={styles.shareMic}>
+              <RNImage
+                source={require('@/assets/images/icons/mic.png')}
+                style={styles.shareMicIcon}
+                resizeMode="contain"
+              />
+            </Pressable>
+            <Pressable style={styles.shareSend}>
+              <Ionicons name="arrow-up" size={24} color={BRAND_BLUE} />
+            </Pressable>
           </View>
-        )}
+
+          <LinearGradient
+            colors={['#3b82f6', '#1e3a8a']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.aiBar}
+          >
+            <AppText style={styles.aiBarText} numberOfLines={2}>
+              Need inspiration? Let AI help you craft the perfect post
+            </AppText>
+            <Pressable style={styles.aiBarButton}>
+              <Ionicons name="sparkles" size={12} color="#FDE047" />
+              <AppText style={styles.aiBarButtonText}>Generate Ideas</AppText>
+              <Ionicons name="arrow-forward" size={14} color="#fff" />
+            </Pressable>
+          </LinearGradient>
+        </View>
 
         {/* Profile Tabs Switcher - horizontally scrollable */}
         <ScrollView
