@@ -7,12 +7,12 @@ import { Image } from 'expo-image';
 import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -108,16 +108,23 @@ export default function ForgotPasswordScreen() {
           style={styles.primaryButton}
           onPress={() => {
             setError(null);
-            const formData = { email: email.trim(), captcha: captchaInput.trim() };
-            if (!formData.email) {
+            const trimmedEmail = email.trim();
+            const trimmedCaptcha = captchaInput.trim();
+            if (!trimmedEmail) {
               setError('Email is required');
               return;
             }
-            if (!formData.captcha) {
+            if (!trimmedCaptcha) {
               setError('Captcha is required');
               return;
             }
-            console.log('Forgot password form submitted:', formData);
+            if (trimmedCaptcha !== captcha) {
+              setError('Captcha does not match. Please try again.');
+              setCaptchaInput('');
+              refreshCaptcha();
+              return;
+            }
+            console.log('Forgot password form submitted:', { email: trimmedEmail, captcha: trimmedCaptcha });
             router.replace('/(auth)/check-email');
           }}
         >
