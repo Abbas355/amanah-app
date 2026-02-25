@@ -1,8 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   Pressable,
@@ -102,6 +101,33 @@ const POSTS = [
     comments: '24',
     shares: '30',
     date: 'Nov 15, 2025',
+  },
+];
+
+const PLAYLISTS = [
+  {
+    id: '1',
+    title: 'Studying the Deen is not a luxury it is a responsibility',
+    image: 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=600&auto=format&fit=crop',
+    date: 'Nov 28, 2025',
+  },
+  {
+    id: '2',
+    title: 'Studying the Deen is not a luxury it is a responsibility',
+    image: 'https://images.unsplash.com/photo-1551041777-ed277b8dd990?q=80&w=600&auto=format&fit=crop',
+    date: 'Nov 28, 2025',
+  },
+  {
+    id: '3',
+    title: 'Studying the Deen is not a luxury it is a responsibility',
+    image: 'https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=600&auto=format&fit=crop',
+    date: 'Nov 28, 2025',
+  },
+  {
+    id: '4',
+    title: 'Studying the Deen is not a luxury it is a responsibility',
+    image: 'https://images.unsplash.com/photo-1574621100236-d25a64a16e16?q=80&w=600&auto=format&fit=crop',
+    date: 'Nov 28, 2025',
   },
 ];
 
@@ -349,6 +375,29 @@ export default function ChannelProfileScreen() {
                       </View>
                       <AppText style={styles.postDate}>| {post.date} |</AppText>
                     </View>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {profileTab === 'Playlists' && (
+              <View style={styles.videosSection}>
+                <AppText style={styles.videosSectionTitle}>Playlists</AppText>
+                <View style={styles.shortsGrid}>
+                  {PLAYLISTS.map((playlist) => (
+                    <Pressable
+                      key={playlist.id}
+                      style={styles.playlistCard}
+                      onPress={() => router.push(`/playlist/${playlist.id}` as any)}
+                    >
+                      <Image source={{ uri: playlist.image }} style={styles.playlistImage} contentFit="cover" />
+                      <View style={styles.playlistContent}>
+                        <AppText style={styles.playlistTitle} numberOfLines={2}>
+                          {playlist.title}
+                        </AppText>
+                        <AppText style={styles.playlistDate}>| {playlist.date} |</AppText>
+                      </View>
+                    </Pressable>
                   ))}
                 </View>
               </View>
@@ -706,5 +755,29 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#9CA3AF',
     marginTop: 4,
+  },
+  playlistCard: {
+    width: SHORTS_CARD_WIDTH,
+    gap: 8,
+  },
+  playlistImage: {
+    width: '100%',
+    aspectRatio: 16 / 9,
+    borderRadius: 16,
+    backgroundColor: '#F3F4F6',
+  },
+  playlistContent: {
+    gap: 4,
+  },
+  playlistTitle: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 14,
+    color: '#111827',
+    lineHeight: 20,
+  },
+  playlistDate: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 12,
+    color: '#9CA3AF',
   },
 });

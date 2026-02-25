@@ -52,6 +52,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="profile" options={{ headerShown: false }} />
           <Stack.Screen name="channel/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="playlist/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="complete-profile" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
         </Stack>
