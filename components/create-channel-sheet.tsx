@@ -40,7 +40,11 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
   };
 
   const renderFormStep = () => (
-    <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        contentContainerStyle={styles.content} 
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
       <AppText style={styles.heading}>Create Channel</AppText>
       <AppText style={styles.description}>
         This is used to publicly represent your channel on Amanah. You can change this later. This creates a new channel on Amanah with its own settings, including Amanah search and watch history.
@@ -77,7 +81,7 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
         <Pressable style={styles.cancelButton} onPress={handleClose}>
           <AppText style={styles.cancelButtonText}>Cancel</AppText>
         </Pressable>
-        <Pressable style={styles.createButton}>
+        <Pressable style={styles.createButton} onPress={handleClose}>
           <AppText style={styles.createButtonText}>Create Channel</AppText>
         </Pressable>
       </View>
@@ -151,7 +155,10 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
         <View style={[styles.sheet, { paddingTop: insets.top }]}>
           <View style={styles.handle} />
           
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+          <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
+            style={{ flex: 1 }}
+          >
              {step === 'form' ? renderFormStep() : renderPictureStep()}
           </KeyboardAvoidingView>
         </View>
@@ -173,7 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    height: '92%', // Covers most of the screen
+    height: '80%', // Covers 80% of the screen
     overflow: 'hidden',
   },
   handle: {
@@ -223,7 +230,7 @@ const styles = StyleSheet.create({
   uploadButton: {
     backgroundColor: BRAND_BLUE,
     borderRadius: 50,
-    height: 44,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
@@ -250,7 +257,7 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    height: 44,
+    height: 40,
     borderRadius: 50,
     borderWidth: 1,
     borderColor: '#E5E7EB',
@@ -266,7 +273,7 @@ const styles = StyleSheet.create({
   },
   createButton: {
     flex: 1,
-    height: 44,
+    height: 40,
     borderRadius: 50,
     backgroundColor: BRAND_BLUE,
     alignItems: 'center',
