@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -28,8 +27,8 @@ const CHANNELS = [
     id: '1',
     name: 'Erza Bilalli',
     handle: '@Erzabbb',
-    image: 'https://images.unsplash.com/photo-1628563694622-5a76957fd09c?q=80&w=600&auto=format&fit=crop',
-    avatar: 'https://images.unsplash.com/photo-1628563694622-5a76957fd09c?q=80&w=100&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1480455624313-e29b44bbfde1?q=80&w=600&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop', // Male
     description: 'In remembrance of Allah, hearts find peace.',
     verified: true,
   },
@@ -37,8 +36,8 @@ const CHANNELS = [
     id: '2',
     name: 'Twinies',
     handle: '@twinies1',
-    image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?q=80&w=600&auto=format&fit=crop',
-    avatar: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?q=80&w=100&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop', // Male
     description: 'In remembrance of Allah...',
     verified: false,
   },
@@ -46,8 +45,8 @@ const CHANNELS = [
     id: '3',
     name: 'Erza Bilalli',
     handle: '@Erzabbb',
-    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop',
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=100&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=600&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop', // Male
     description: 'In remembrance of Allah, hearts find.',
     verified: true,
   },
@@ -55,8 +54,8 @@ const CHANNELS = [
     id: '4',
     name: 'Twinies',
     handle: '@twinies1',
-    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=600&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop', // Male
     description: 'In remembrance of Allah...',
     verified: false,
   },
@@ -64,8 +63,8 @@ const CHANNELS = [
     id: '5',
     name: 'Erza Bilalli',
     handle: '@Erzabbb',
-    image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=600&auto=format&fit=crop',
-    avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=100&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop', // Male
     description: 'In remembrance of Allah, hearts find.',
     verified: true,
   },
@@ -73,8 +72,8 @@ const CHANNELS = [
     id: '6',
     name: 'Twinies',
     handle: '@twinies1',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop', // Male
     description: 'In remembrance of Allah...',
     verified: false,
   },
@@ -144,9 +143,13 @@ export default function ChannelsScreen() {
 
               <View style={styles.cardContent}>
                 <View style={styles.cardHeader}>
-                  <View style={styles.cardAvatarWrap}>
-                    <Image source={{ uri: channel.avatar }} style={styles.cardAvatar} />
-                  </View>
+                  <Pressable style={styles.addUserButton}>
+                    <RNImage
+                      source={require('@/assets/images/icons/user_add.png')}
+                      style={styles.addUserIcon}
+                      resizeMode="contain"
+                    />
+                  </Pressable>
                 </View>
 
                 <View style={styles.cardFooter}>
@@ -155,7 +158,11 @@ export default function ChannelsScreen() {
                       {channel.name}
                     </AppText>
                     {channel.verified && (
-                      <Ionicons name="checkmark-circle" size={14} color="#FBBF24" />
+                      <RNImage
+                        source={require('@/assets/images/verified.png')}
+                        style={{ width: 18, height: 18 }}
+                        resizeMode="contain"
+                      />
                     )}
                   </View>
                   <AppText style={styles.cardHandle}>{channel.handle}</AppText>
@@ -282,6 +289,23 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  addUserButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addUserIcon: {
+    width: 14,
+    height: 14,
+    tintColor: '#fff',
   },
   cardAvatarWrap: {
     width: 36,
@@ -302,6 +326,7 @@ const styles = StyleSheet.create({
   nameRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     gap: 4,
   },
   cardName: {
@@ -311,11 +336,12 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0,0,0,0.3)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
+    flex: 1,
   },
   cardHandle: {
     fontFamily: FONT_DEFAULT,
     fontSize: 12,
-    color: 'rgba(255,255,255,0.9)',
+    color: '#D1D5DB', // Light grey
     marginBottom: 4,
   },
   cardDesc: {
