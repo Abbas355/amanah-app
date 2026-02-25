@@ -3,14 +3,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import {
-    Dimensions,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    View,
-} from 'react-native';
+import { Dimensions, Pressable, Image as RNImage, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
@@ -23,11 +16,11 @@ const GAP = 16;
 const CARD_WIDTH = (SCREEN_WIDTH - H_PAD * 2 - GAP) / 2;
 
 const CATEGORIES = [
-  { id: '1', name: 'Discover', icon: 'compass-outline', bg: '#E0F2FE' }, // Light blue
-  { id: '2', name: 'Health', icon: 'medkit-outline', bg: '#F3F4F6' }, // Grey/Beige
-  { id: '3', name: 'Shop', icon: 'cart-outline', bg: '#FCE7F3' }, // Pinkish
-  { id: '4', name: 'Learn', icon: 'book-outline', bg: '#E0E7FF' }, // Indigo-ish
-  { id: '5', name: 'Travel', icon: 'airplane-outline', bg: '#DCFCE7' }, // Greenish
+  { id: '1', name: 'Discover', icon: require('@/assets/images/icons/compass.png'), bg: '#fff' }, // Light blue
+  { id: '2', name: 'Health', icon: require('@/assets/images/icons/health.png'), bg: 'rgba(253, 202, 64, 0.2)' }, // Yellow 20%
+  { id: '3', name: 'Shop', icon: require('@/assets/images/icons/shop.png'), bg: '#FCE7F3' }, // Pinkish
+  { id: '4', name: 'Learn', icon: require('@/assets/images/icons/learn.png'), bg: '#E0E7FF' }, // Indigo-ish
+  { id: '5', name: 'Travel', icon: require('@/assets/images/icons/travel.png'), bg: '#DCFCE7' }, // Greenish
 ] as const;
 
 const CHANNELS = [
@@ -126,7 +119,11 @@ export default function ChannelsScreen() {
           {CATEGORIES.map((cat) => (
             <View key={cat.id} style={styles.categoryItem}>
               <View style={[styles.categoryIconWrap, { backgroundColor: cat.bg }]}>
-                <Ionicons name={cat.icon as any} size={24} color="#1F2937" />
+                <RNImage
+                  source={cat.icon}
+                  style={{ width: 24, height: 24, tintColor: '#1F2937' }}
+                  resizeMode="contain"
+                />
               </View>
               <AppText style={styles.categoryName}>{cat.name}</AppText>
             </View>
@@ -237,14 +234,14 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   categoryIconWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: 16,
+    width: 56,
+    height: 56,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
   },
   categoryName: {
-    fontFamily: FONT_DEFAULT,
+    fontFamily: FONT_SEMIBOLD,
     fontSize: 13,
     color: '#111827',
   },
