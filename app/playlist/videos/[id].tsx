@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
+import { Dimensions, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
@@ -72,13 +72,16 @@ export default function PlaylistVideosScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Top Image Section */}
-        <View style={styles.imageContainer}>
+        <Pressable 
+          style={styles.imageContainer}
+          onPress={() => router.back()}
+        >
           <Image 
             source={{ uri: PLAYLIST_DETAIL.image }} 
             style={styles.image} 
             contentFit="cover"
           />
-        </View>
+        </Pressable>
 
         {/* Playlist Videos List */}
         <View style={styles.videosList}>
@@ -160,11 +163,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#111827',
     lineHeight: 22,
+    includeFontPadding: false,
   },
   videoDate: {
     fontFamily: FONT_DEFAULT,
     fontSize: 12,
     color: '#6B7280',
+    includeFontPadding: false,
   },
   commentSection: {
     paddingHorizontal: 24,
@@ -203,5 +208,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#4B5563',
     lineHeight: 20,
+    includeFontPadding: false,
   },
 });

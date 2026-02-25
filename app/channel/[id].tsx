@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/app-text';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { ScreenGradient } from '@/components/screen-gradient';
-import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
+import { FONT_BOLD, FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
 
 const BRAND_BLUE = '#60A5FA';
 const PROFILE_IMAGE = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop';
@@ -515,7 +515,6 @@ const styles = StyleSheet.create({
   followStats: {
     fontFamily: FONT_DEFAULT,
     fontSize: 16,
-    fontWeight: '400',
     color: '#111827',
   },
   primaryButton: {
@@ -632,9 +631,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   statNum: {
-    fontFamily: FONT_DEFAULT,
+    fontFamily: FONT_BOLD,
     fontSize: 13,
-    fontWeight: '700',
     color: '#111827',
   },
   videoCardDate: {
@@ -736,6 +734,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#4B5563',
     lineHeight: 22,
+    includeFontPadding: false,
   },
   postStats: {
     flexDirection: 'row',

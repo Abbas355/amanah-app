@@ -63,7 +63,7 @@ export default function PlaylistDetailScreen() {
               </View>
               <Pressable 
                 style={styles.statItem}
-                onPress={() => router.push(`/playlist/videos/${id}`)}
+                onPress={() => router.push(`/playlist/videos/${id}` as any)}
               >
                 <AppText style={styles.statText}>{PLAYLIST_DETAIL.comments}</AppText>
                 <Ionicons name="chatbubble-outline" size={20} color="#fff" />

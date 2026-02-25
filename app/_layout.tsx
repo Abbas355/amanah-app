@@ -1,6 +1,7 @@
 import {
     Poppins_400Regular,
     Poppins_600SemiBold,
+    Poppins_700Bold,
     useFonts,
 } from '@expo-google-fonts/poppins';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
@@ -26,6 +27,7 @@ export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
+    Poppins_700Bold,
   });
 
   const onLayoutRootView = useCallback(async () => {
