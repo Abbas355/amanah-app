@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -34,27 +33,35 @@ const SHORTS_CARD_WIDTH = (SCREEN_WIDTH - H_PAD * 2 - 16) / 2;
 const SHORTS = [
   {
     id: '1',
-    title: 'Ramadan Prep 🌙',
-    views: '1.2k',
-    image: 'https://images.unsplash.com/photo-1542044896-30d22f03d3da?q=80&w=600&auto=format&fit=crop',
+    title: 'Studying the Deen is not a luxury it is a responsibility',
+    image: 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=600&auto=format&fit=crop',
+    likes: '13',
+    comments: '3',
+    shares: '0',
   },
   {
     id: '2',
-    title: 'Daily Dua',
-    views: '856',
+    title: 'Daily Dua for peace and guidance',
     image: 'https://images.unsplash.com/photo-1585036156171-384164a8c675?q=80&w=600&auto=format&fit=crop',
+    likes: '45',
+    comments: '12',
+    shares: '5',
   },
   {
     id: '3',
-    title: 'Quran Recitation',
-    views: '2.1k',
-    image: 'https://images.unsplash.com/photo-1588653905527-772967691798?q=80&w=600&auto=format&fit=crop',
+    title: 'Beautiful Quran Recitation',
+    image: 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?q=80&w=600&auto=format&fit=crop',
+    likes: '120',
+    comments: '8',
+    shares: '15',
   },
   {
     id: '4',
-    title: 'Mosque Visit',
-    views: '3.4k',
+    title: 'Visiting the historic Mosque',
     image: 'https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=600&auto=format&fit=crop',
+    likes: '89',
+    comments: '4',
+    shares: '2',
   },
 ];
 
@@ -240,27 +247,34 @@ export default function ChannelProfileScreen() {
             )}
 
             {profileTab === 'Shorts' && (
-              <View style={styles.shortsGrid}>
-                {SHORTS.map((short) => (
-                  <Pressable key={short.id} style={styles.shortsCard}>
-                    <Image source={{ uri: short.image }} style={styles.shortsImage} contentFit="cover" />
-                    <LinearGradient
-                      colors={['transparent', 'rgba(0,0,0,0.8)']}
-                      style={styles.shortsOverlay}
-                    />
-                    <View style={styles.shortsContent}>
-                      <View style={styles.shortsHeader}>
-                         <Ionicons name="play" size={16} color="#fff" />
-                      </View>
-                      <View style={styles.shortsFooter}>
-                        <AppText style={styles.shortsTitle} numberOfLines={2}>
+              <View style={styles.videosSection}>
+                <AppText style={styles.videosSectionTitle}>Short Videos</AppText>
+                <View style={styles.shortsGrid}>
+                  {SHORTS.map((short) => (
+                    <Pressable key={short.id} style={styles.shortsCard}>
+                      <Image source={{ uri: short.image }} style={styles.shortsImage} contentFit="cover" />
+                      <View style={styles.shortsContent}>
+                        <AppText style={styles.shortsTitle} numberOfLines={3}>
                           {short.title}
                         </AppText>
-                        <AppText style={styles.shortsViews}>{short.views} views</AppText>
+                        <View style={styles.shortsStats}>
+                          <View style={styles.statItem}>
+                            <AppText style={styles.statNum}>{short.likes}</AppText>
+                            <Ionicons name="heart-outline" size={14} color="#EF4444" />
+                          </View>
+                          <View style={styles.statItem}>
+                            <AppText style={styles.statNum}>{short.comments}</AppText>
+                            <Ionicons name="chatbubble-outline" size={14} color="#9CA3AF" />
+                          </View>
+                          <View style={styles.statItem}>
+                            <AppText style={styles.statNum}>{short.shares}</AppText>
+                            <Ionicons name="repeat" size={14} color="#9CA3AF" />
+                          </View>
+                        </View>
                       </View>
-                    </View>
-                  </Pressable>
-                ))}
+                    </Pressable>
+                  ))}
+                </View>
               </View>
             )}
           </View>
@@ -563,49 +577,25 @@ const styles = StyleSheet.create({
   },
   shortsCard: {
     width: SHORTS_CARD_WIDTH,
-    height: SHORTS_CARD_WIDTH * 1.6,
-    borderRadius: 16,
-    overflow: 'hidden',
-    backgroundColor: '#F3F4F6',
-    position: 'relative',
+    gap: 8,
   },
   shortsImage: {
     width: '100%',
-    height: '100%',
-  },
-  shortsOverlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '50%',
+    aspectRatio: 3 / 4,
+    borderRadius: 16,
+    backgroundColor: '#F3F4F6',
   },
   shortsContent: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    padding: 12,
-    justifyContent: 'space-between',
-  },
-  shortsHeader: {
-    alignSelf: 'flex-end',
-  },
-  shortsFooter: {
-    gap: 4,
+    gap: 8,
   },
   shortsTitle: {
-    fontFamily: FONT_SEMIBOLD,
-    fontSize: 14,
-    color: '#fff',
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  shortsViews: {
     fontFamily: FONT_DEFAULT,
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.9)',
+    fontSize: 14,
+    color: '#111827',
+    lineHeight: 20,
+  },
+  shortsStats: {
+    flexDirection: 'row',
+    gap: 12,
   },
 });
