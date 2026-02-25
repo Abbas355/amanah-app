@@ -1,14 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    Dimensions,
-    Pressable,
-    Image as RNImage,
-    ScrollView,
-    StyleSheet,
-    View,
+  Dimensions,
+  Pressable,
+  Image as RNImage,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -62,6 +63,45 @@ const SHORTS = [
     likes: '89',
     comments: '4',
     shares: '2',
+  },
+];
+
+const POSTS = [
+  {
+    id: '1',
+    title: 'Studying the Deen is not a luxury it is a responsibility',
+    content: "It's not something we turn to only in hard times, or when life slows down, or when it feels convenient. It's a lifelong duty upon every believer because without knowledge, faith becomes fragile.",
+    likes: '13',
+    comments: '3',
+    shares: '0',
+    date: 'Nov 28, 2025',
+  },
+  {
+    id: '2',
+    title: 'The importance of patience (Sabr)',
+    content: "Patience is not just about waiting, it's about how we behave while we wait. Allah is with those who are patient.",
+    likes: '45',
+    comments: '12',
+    shares: '5',
+    date: 'Nov 25, 2025',
+  },
+  {
+    id: '3',
+    title: 'Community Iftar Planning',
+    content: "We are planning a community Iftar for next week. Everyone is welcome to join and contribute. Let's make this a memorable gathering.",
+    likes: '28',
+    comments: '8',
+    shares: '2',
+    date: 'Nov 20, 2025',
+  },
+  {
+    id: '4',
+    title: 'Reflection on Surah Al-Kahf',
+    content: "Reading Surah Al-Kahf on Fridays is a light between two Fridays. Let's remind each other to read it today.",
+    likes: '150',
+    comments: '24',
+    shares: '30',
+    date: 'Nov 15, 2025',
   },
 ];
 
@@ -252,7 +292,12 @@ export default function ChannelProfileScreen() {
                 <View style={styles.shortsGrid}>
                   {SHORTS.map((short) => (
                     <Pressable key={short.id} style={styles.shortsCard}>
-                      <Image source={{ uri: short.image }} style={styles.shortsImage} contentFit="cover" />
+                      <Image 
+                        source={{ uri: short.image }} 
+                        style={styles.shortsImage} 
+                        contentFit="cover"
+                        transition={200}
+                      />
                       <View style={styles.shortsContent}>
                         <AppText style={styles.shortsTitle} numberOfLines={3}>
                           {short.title}
@@ -273,6 +318,37 @@ export default function ChannelProfileScreen() {
                         </View>
                       </View>
                     </Pressable>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {profileTab === 'Post' && (
+              <View style={styles.videosSection}>
+                <AppText style={styles.videosSectionTitle}>Posts</AppText>
+                <View style={styles.postsList}>
+                  {POSTS.map((post) => (
+                    <View key={post.id} style={styles.postCard}>
+                      <AppText style={styles.postTitle}>{post.title}</AppText>
+                      <AppText style={styles.postContent} numberOfLines={4}>
+                        {post.content}
+                      </AppText>
+                      <View style={styles.postStats}>
+                        <View style={styles.statItem}>
+                          <AppText style={styles.statNum}>{post.likes}</AppText>
+                          <Ionicons name="heart-outline" size={16} color="#EF4444" />
+                        </View>
+                        <View style={styles.statItem}>
+                          <AppText style={styles.statNum}>{post.comments}</AppText>
+                          <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
+                        </View>
+                        <View style={styles.statItem}>
+                          <AppText style={styles.statNum}>{post.shares}</AppText>
+                          <Ionicons name="repeat" size={16} color="#9CA3AF" />
+                        </View>
+                      </View>
+                      <AppText style={styles.postDate}>| {post.date} |</AppText>
+                    </View>
                   ))}
                 </View>
               </View>
@@ -597,5 +673,38 @@ const styles = StyleSheet.create({
   shortsStats: {
     flexDirection: 'row',
     gap: 12,
+  },
+  postsList: {
+    gap: 16,
+  },
+  postCard: {
+    backgroundColor: '#fff',
+    paddingVertical: 16,
+    gap: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  postTitle: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 16,
+    color: '#111827',
+    lineHeight: 24,
+  },
+  postContent: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 14,
+    color: '#4B5563',
+    lineHeight: 22,
+  },
+  postStats: {
+    flexDirection: 'row',
+    gap: 16,
+    marginTop: 4,
+  },
+  postDate: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginTop: 4,
   },
 });
