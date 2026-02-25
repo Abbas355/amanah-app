@@ -4,17 +4,18 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  Dimensions,
-  Pressable,
-  Image as RNImage,
-  ScrollView,
-  StyleSheet,
-  View,
+    Dimensions,
+    Pressable,
+    Image as RNImage,
+    ScrollView,
+    StyleSheet,
+    View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
 import { DashboardHeader } from '@/components/dashboard-header';
+import { ScreenGradient } from '@/components/screen-gradient';
 import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
 
 const BRAND_BLUE = '#60A5FA';
@@ -72,11 +73,7 @@ export default function ProfileScreen() {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <LinearGradient
-            colors={['rgba(96,165,250,0.35)', 'rgba(96,165,250,0.15)', 'transparent']}
-            locations={[0, 0.4, 0.75]}
-            style={styles.gradient}
-          />
+          <ScreenGradient />
           <Pressable onPress={() => router.back()} style={styles.backRow}>
             <Ionicons name="chevron-back" size={20} color="#111827" />
             <AppText style={styles.backRowLabel}>My Profile</AppText>
@@ -277,17 +274,6 @@ const styles = StyleSheet.create({
   contentWrap: {
     flex: 1,
     position: 'relative',
-  },
-  gradient: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    height: 580,
-    zIndex: 0,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    overflow: 'hidden',
   },
   backRow: {
     flexDirection: 'row',

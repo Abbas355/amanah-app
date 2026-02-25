@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -19,6 +18,7 @@ import { AppText } from '@/components/app-text';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { FormInput } from '@/components/form-input';
 import { ImageUploadSheet } from '@/components/image-upload-sheet';
+import { ScreenGradient } from '@/components/screen-gradient';
 import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
 
 const BRAND_BLUE = '#60A5FA';
@@ -94,11 +94,7 @@ export default function CompleteProfileScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <LinearGradient
-          colors={['rgba(96,165,250,0.35)', 'rgba(96,165,250,0.15)', 'transparent']}
-          locations={[0, 0.4, 0.75]}
-          style={styles.gradient}
-        />
+        <ScreenGradient />
         <Pressable onPress={() => router.back()} style={styles.backRow}>
           <Ionicons name="chevron-back" size={20} color="#111827" />
           <AppText style={styles.backRowLabel}>My Personal Profile</AppText>
@@ -331,17 +327,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 24,
-  },
-  gradient: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    height: 580,
-    zIndex: 0,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    overflow: 'hidden',
   },
   topSection: {
     marginBottom: 24,
