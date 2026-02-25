@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -28,6 +29,34 @@ type ProfileTab = (typeof PROFILE_TABS)[number];
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const H_PAD = 24;
 const CARD_WIDTH = Math.min(300, SCREEN_WIDTH - H_PAD * 2 - 24);
+const SHORTS_CARD_WIDTH = (SCREEN_WIDTH - H_PAD * 2 - 16) / 2;
+
+const SHORTS = [
+  {
+    id: '1',
+    title: 'Ramadan Prep 🌙',
+    views: '1.2k',
+    image: 'https://images.unsplash.com/photo-1542044896-30d22f03d3da?q=80&w=600&auto=format&fit=crop',
+  },
+  {
+    id: '2',
+    title: 'Daily Dua',
+    views: '856',
+    image: 'https://images.unsplash.com/photo-1585036156171-384164a8c675?q=80&w=600&auto=format&fit=crop',
+  },
+  {
+    id: '3',
+    title: 'Quran Recitation',
+    views: '2.1k',
+    image: 'https://images.unsplash.com/photo-1588653905527-772967691798?q=80&w=600&auto=format&fit=crop',
+  },
+  {
+    id: '4',
+    title: 'Mosque Visit',
+    views: '3.4k',
+    image: 'https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=600&auto=format&fit=crop',
+  },
+];
 
 export default function ChannelProfileScreen() {
   const router = useRouter();
@@ -207,6 +236,31 @@ export default function ChannelProfileScreen() {
                     <AppText style={styles.videoCardDate}>| Nov 28, 2025 |</AppText>
                   </View>
                 </ScrollView>
+              </View>
+            )}
+
+            {profileTab === 'Shorts' && (
+              <View style={styles.shortsGrid}>
+                {SHORTS.map((short) => (
+                  <Pressable key={short.id} style={styles.shortsCard}>
+                    <Image source={{ uri: short.image }} style={styles.shortsImage} contentFit="cover" />
+                    <LinearGradient
+                      colors={['transparent', 'rgba(0,0,0,0.8)']}
+                      style={styles.shortsOverlay}
+                    />
+                    <View style={styles.shortsContent}>
+                      <View style={styles.shortsHeader}>
+                         <Ionicons name="play" size={16} color="#fff" />
+                      </View>
+                      <View style={styles.shortsFooter}>
+                        <AppText style={styles.shortsTitle} numberOfLines={2}>
+                          {short.title}
+                        </AppText>
+                        <AppText style={styles.shortsViews}>{short.views} views</AppText>
+                      </View>
+                    </View>
+                  </Pressable>
+                ))}
               </View>
             )}
           </View>
@@ -501,5 +555,57 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
     lineHeight: 22,
+  },
+  shortsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+  },
+  shortsCard: {
+    width: SHORTS_CARD_WIDTH,
+    height: SHORTS_CARD_WIDTH * 1.6,
+    borderRadius: 16,
+    overflow: 'hidden',
+    backgroundColor: '#F3F4F6',
+    position: 'relative',
+  },
+  shortsImage: {
+    width: '100%',
+    height: '100%',
+  },
+  shortsOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '50%',
+  },
+  shortsContent: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: 12,
+    justifyContent: 'space-between',
+  },
+  shortsHeader: {
+    alignSelf: 'flex-end',
+  },
+  shortsFooter: {
+    gap: 4,
+  },
+  shortsTitle: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 14,
+    color: '#fff',
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  shortsViews: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.9)',
   },
 });
