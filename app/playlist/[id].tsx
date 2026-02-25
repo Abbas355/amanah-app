@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    backgroundColor: '#000', // Fallback
+    backgroundColor: '#fff', // Fallback
     overflow: 'hidden',
   },
   imageContainer: {
