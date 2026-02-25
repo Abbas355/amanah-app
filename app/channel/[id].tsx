@@ -114,7 +114,7 @@ const PLAYLISTS = [
   {
     id: '2',
     title: 'Studying the Deen is not a luxury it is a responsibility',
-    image: 'https://images.unsplash.com/photo-1551041777-ed277b8dd990?q=80&w=600&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?q=80&w=600&auto=format&fit=crop',
     date: 'Nov 28, 2025',
   },
   {
@@ -126,7 +126,7 @@ const PLAYLISTS = [
   {
     id: '4',
     title: 'Studying the Deen is not a luxury it is a responsibility',
-    image: 'https://images.unsplash.com/photo-1574621100236-d25a64a16e16?q=80&w=600&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=600&auto=format&fit=crop',
     date: 'Nov 28, 2025',
   },
 ];
@@ -195,25 +195,26 @@ export default function ChannelProfileScreen() {
             </View>
           </View>
 
-          {/* Profile Tabs Switcher - horizontally scrollable */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.tabsWrap}
-            style={styles.tabsScroll}
-          >
-            {PROFILE_TABS.map((tab) => (
-              <Pressable
-                key={tab}
-                onPress={() => setProfileTab(tab)}
-                style={[styles.tab, profileTab === tab && styles.tabActive]}
-              >
-                <AppText style={[styles.tabText, profileTab === tab && styles.tabTextActive]}>
-                  {tab}
-                </AppText>
-              </Pressable>
-            ))}
-          </ScrollView>
+          {/* Profile Tabs Switcher - fixed width */}
+          <View style={styles.tabsContainer}>
+            <View style={styles.tabsWrap}>
+              {PROFILE_TABS.map((tab) => (
+                <Pressable
+                  key={tab}
+                  onPress={() => setProfileTab(tab)}
+                  style={[styles.tab, profileTab === tab && styles.tabActive]}
+                >
+                  <AppText 
+                    style={[styles.tabText, profileTab === tab && styles.tabTextActive]}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                  >
+                    {tab}
+                  </AppText>
+                </Pressable>
+              ))}
+            </View>
+          </View>
 
           {/* Tab Content */}
           <View style={styles.tabContent}>
@@ -550,38 +551,30 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#6B7280',
   },
-  tabsScroll: {
+  tabsContainer: {
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#F9FAFB',
-    maxHeight: 72,
     marginTop: 16,
   },
   tabsWrap: {
     flexDirection: 'row',
     paddingHorizontal: H_PAD,
-    gap: 12,
-    paddingVertical: 16,
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   tab: {
-    paddingHorizontal: 24,
-    height: 40,
-    borderRadius: 999,
-    backgroundColor: 'transparent',
+    flex: 1,
+    height: 44,
     alignItems: 'center',
     justifyContent: 'center',
   },
   tabActive: {
-    backgroundColor: 'transparent',
     borderBottomWidth: 2,
     borderBottomColor: BRAND_BLUE,
-    borderRadius: 0,
-    paddingHorizontal: 4,
-    height: 38,
   },
   tabText: {
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: FONT_DEFAULT,
     color: '#9CA3AF',
     textAlign: 'center',
