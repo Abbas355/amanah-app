@@ -226,6 +226,10 @@ const styles = StyleSheet.create({
     fontFamily: FONT_SEMIBOLD,
     fontSize: 32,
     color: BRAND_BLUE,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+    marginTop: 4, // Visual centering adjustment for Poppins
   },
   uploadButton: {
     backgroundColor: BRAND_BLUE,
