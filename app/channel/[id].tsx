@@ -620,6 +620,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#6B7280',
     lineHeight: 20,
+    includeFontPadding: false,
   },
   videoCardStats: {
     flexDirection: 'row',
@@ -746,6 +747,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#9CA3AF',
     marginTop: 4,
+    includeFontPadding: false,
   },
   playlistCard: {
     width: SHORTS_CARD_WIDTH,
