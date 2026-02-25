@@ -559,7 +559,6 @@ const styles = StyleSheet.create({
   },
   tabsWrap: {
     flexDirection: 'row',
-    paddingHorizontal: H_PAD,
     alignItems: 'center',
     justifyContent: 'space-between',
   },
