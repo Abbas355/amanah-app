@@ -4,13 +4,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Dimensions,
-    Pressable,
-    Image as RNImage,
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    View,
+  Dimensions,
+  Pressable,
+  Image as RNImage,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { G, Line, Path, Rect, Text as SvgText } from 'react-native-svg';
@@ -1524,9 +1524,9 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
     padding: 16,
     gap: 16,
-    shadowColor: '#000',
+    shadowColor: '#6090C0',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
+    shadowOpacity: 0.12,
     shadowRadius: 8,
     elevation: 3,
   },
@@ -1573,18 +1573,24 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   donutLegendBtn: {
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  donutLegendBtnTextWhite: {
+  donutLegendBtnTextWhite: {    paddingVertical: 2,
     fontFamily: FONT_SEMIBOLD,
     fontSize: 12,
+    lineHeight: 12,
     color: '#fff',
+    textAlignVertical: 'center',
   },
-  donutLegendBtnTextDark: {
+  donutLegendBtnTextDark: { paddingVertical: 2,
     fontFamily: FONT_SEMIBOLD,
     fontSize: 12,
+    lineHeight: 12,
     color: '#4B5563',
+    textAlignVertical: 'center',
   },
 });
