@@ -109,11 +109,13 @@ const POSTS = [
 function EmptyChannelState({ 
   onCreateChannel, 
   onDemoClick,
-  onEmptyDemoClick 
+  onEmptyDemoClick,
+  onAnalyticsNoDataDemoClick,
 }: { 
   onCreateChannel: () => void, 
   onDemoClick?: () => void,
-  onEmptyDemoClick?: () => void
+  onEmptyDemoClick?: () => void,
+  onAnalyticsNoDataDemoClick?: () => void,
 }) {
   return (
     <View style={styles.emptyState}>
@@ -147,6 +149,14 @@ function EmptyChannelState({
           </AppText>
         </Pressable>
       )}
+
+      {onAnalyticsNoDataDemoClick && (
+        <Pressable onPress={onAnalyticsNoDataDemoClick} style={{ marginTop: 12 }}>
+          <AppText style={{ fontFamily: FONT_DEFAULT, color: BRAND_BLUE, textDecorationLine: 'underline', fontSize: 14 }}>
+            Channel analytics with no data (demo)
+          </AppText>
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -169,6 +179,27 @@ function EmptyTabState({ type }: { type: 'Video' | 'Shorts' | 'Post' }) {
   );
 }
 
+const ANALYTICS_SUB_TABS = ['Overview', 'Content', 'Audience'] as const;
+type AnalyticsSubTab = (typeof ANALYTICS_SUB_TABS)[number];
+
+function EmptyAnalyticsState() {
+  return (
+    <View style={styles.emptyState}>
+      <View style={styles.emptyStateImageWrap}>
+        <RNImage
+          source={require('@/assets/images/no_channel.png')}
+          style={styles.emptyStateImage}
+          resizeMode="contain"
+        />
+      </View>
+      <AppText style={styles.emptyStateTitle}>You don't have{'\n'}any data yet</AppText>
+      <AppText style={styles.emptyStateSubtitle}>
+        Start your content creator journey by posting your first Post
+      </AppText>
+    </View>
+  );
+}
+
 export default function ProfileScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ initialTab?: ProfileTab }>();
@@ -179,12 +210,21 @@ export default function ProfileScreen() {
   // Demo state: 'none' | 'full' | 'empty'
   const [demoType, setDemoType] = useState<'none' | 'full' | 'empty'>('none');
   const [demoSubTab, setDemoSubTab] = useState<'Videos' | 'Shorts' | 'Post'>('Videos');
+  // Channel analytics no-data demo
+  const [isAnalyticsNoDataDemo, setIsAnalyticsNoDataDemo] = useState(false);
+  const [analyticsSubTab, setAnalyticsSubTab] = useState<AnalyticsSubTab>('Overview');
 
   useEffect(() => {
     if (params.initialTab && PROFILE_TABS.includes(params.initialTab)) {
       setProfileTab(params.initialTab);
     }
   }, [params.initialTab]);
+
+  useEffect(() => {
+    if (profileTab !== 'CHANNEL ANALYTICS') {
+      setIsAnalyticsNoDataDemo(false);
+    }
+  }, [profileTab]);
 
   return (
     <View style={styles.container}>
@@ -575,9 +615,27 @@ export default function ProfileScreen() {
                 onEmptyDemoClick={() => setDemoType('empty')}
               />
             )
+          ) : profileTab === 'CHANNEL ANALYTICS' && isAnalyticsNoDataDemo ? (
+            <View style={styles.videosSection}>
+              <View style={styles.subTabsWrap}>
+                {ANALYTICS_SUB_TABS.map((tab) => (
+                  <Pressable
+                    key={tab}
+                    onPress={() => setAnalyticsSubTab(tab)}
+                    style={[styles.subTab, analyticsSubTab === tab && styles.subTabActive]}
+                  >
+                    <AppText style={[styles.subTabText, analyticsSubTab === tab && styles.subTabTextActive]}>
+                      {tab}
+                    </AppText>
+                  </Pressable>
+                ))}
+              </View>
+              <EmptyAnalyticsState />
+            </View>
           ) : (
             <EmptyChannelState 
               onCreateChannel={() => setIsCreateChannelVisible(true)} 
+              onAnalyticsNoDataDemoClick={profileTab === 'CHANNEL ANALYTICS' ? () => setIsAnalyticsNoDataDemo(true) : undefined}
             />
           )}
         </View>
