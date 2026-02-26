@@ -401,30 +401,36 @@ function ViewsLineChart() {
 function AnalyticsWithDataContent() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [startFocused, setStartFocused] = useState(false);
+  const [endFocused, setEndFocused] = useState(false);
 
   return (
     <View style={styles.analyticsWithData}>
       <AppText style={styles.analyticsSectionTitle}>Your channel in the last 30 days</AppText>
       <View style={styles.dateRow}>
         <View style={styles.dateFieldWrap}>
-          <AppText style={styles.dateLabel}>Start date</AppText>
+          <AppText style={[styles.dateLabel, startFocused && styles.dateLabelActive]}>Start date</AppText>
           <TextInput
-            style={[styles.dateInput, styles.dateInputActive]}
+            style={[styles.dateInput, startFocused && styles.dateInputActive]}
             placeholder="MM/DD/YYYY"
             placeholderTextColor="#9CA3AF"
             value={startDate}
             onChangeText={setStartDate}
+            onFocus={() => setStartFocused(true)}
+            onBlur={() => setStartFocused(false)}
           />
         </View>
         <AppText style={styles.dateDash}>-</AppText>
         <View style={styles.dateFieldWrap}>
-          <AppText style={styles.dateLabel}>End date</AppText>
+          <AppText style={[styles.dateLabel, endFocused && styles.dateLabelActive]}>End date</AppText>
           <TextInput
-            style={styles.dateInput}
+            style={[styles.dateInput, endFocused && styles.dateInputActive]}
             placeholder="MM/DD/YYYY"
             placeholderTextColor="#9CA3AF"
             value={endDate}
             onChangeText={setEndDate}
+            onFocus={() => setEndFocused(true)}
+            onBlur={() => setEndFocused(false)}
           />
         </View>
       </View>
@@ -1491,19 +1497,30 @@ const styles = StyleSheet.create({
   dateFieldWrap: {
     flex: 1,
     minWidth: 120,
+    position: 'relative',
   },
   dateLabel: {
+    position: 'absolute',
+    left: 12,
+    top: -10,
     fontFamily: FONT_DEFAULT,
     fontSize: 12,
     color: '#6B7280',
-    marginBottom: 6,
+    backgroundColor: '#fff',
+    paddingHorizontal: 4,
+    zIndex: 1,
+  },
+  dateLabelActive: {
+    color: BRAND_BLUE,
   },
   dateInput: {
-    height: 44,
+    height: 50,
     borderWidth: 1,
     borderColor: '#E5E7EB',
     borderRadius: 12,
     paddingHorizontal: 12,
+    paddingVertical: 6,
+    paddingTop: 10,
     fontFamily: FONT_DEFAULT,
     fontSize: 14,
     color: '#111827',
