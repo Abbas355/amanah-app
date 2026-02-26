@@ -13,7 +13,7 @@ import {
     View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Line, Path, Text as SvgText } from 'react-native-svg';
+import Svg, { G, Line, Path, Rect, Text as SvgText } from 'react-native-svg';
 
 import { AppText } from '@/components/app-text';
 import { CreateChannelSheet } from '@/components/create-channel-sheet';
@@ -223,6 +223,111 @@ const AXIS_COLOR = '#93C5FD';
 const LABEL_COLOR = '#6B7280';
 const IPSUM_COLOR = '#C3A670';
 
+// Donut chart: 3 segments only – MALE, FEMALE, ANONIM (values & colors per design)
+const MALE_BLUE = '#5196FF';
+const FEMALE_COLOR = '#C3A670'; // gold, same as legend
+const ANONIM_COLOR = '#E0E0E0'; // light gray, same as legend
+const GAP_DEG = 2;
+const DONUT_TOTAL = 37 + 22 + 24; // 83 – segments scale to fill ring, labels show 37%, 22%, 24%
+const DONUT_SEGMENTS = [
+  { label: 'MALE', pct: 37, color: MALE_BLUE },
+  { label: 'FEMALE', pct: 22, color: FEMALE_COLOR },
+  { label: 'ANONIM', pct: 24, color: ANONIM_COLOR },
+];
+
+function describeDonutArc(cx: number, cy: number, rOuter: number, rInner: number, startDeg: number, endDeg: number): string {
+  const rad = (d: number) => (d * Math.PI) / 180;
+  const x = (r: number, d: number) => cx + r * Math.cos(rad(d));
+  const y = (r: number, d: number) => cy - r * Math.sin(rad(d));
+  const startOut = `${x(rOuter, startDeg)} ${y(rOuter, startDeg)}`;
+  const endOut = `${x(rOuter, endDeg)} ${y(rOuter, endDeg)}`;
+  const endIn = `${x(rInner, endDeg)} ${y(rInner, endDeg)}`;
+  const startIn = `${x(rInner, startDeg)} ${y(rInner, startDeg)}`;
+  const large = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
+  return `M ${startOut} A ${rOuter} ${rOuter} 0 ${large} 1 ${endOut} L ${endIn} A ${rInner} ${rInner} 0 ${large} 0 ${startIn} Z`;
+}
+
+function ViewsDonutChart() {
+  const size = Math.min(SCREEN_WIDTH - H_PAD * 2 - 80, 220) + 2;
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = size / 2 - 16;
+  const rInner = R * 0.5;
+
+  let currentAngle = 90;
+  const paths: { d: string; fill: string }[] = [];
+  DONUT_SEGMENTS.forEach((seg) => {
+    const sweep = (seg.pct / DONUT_TOTAL) * 360;
+    const start = currentAngle;
+    const end = currentAngle - sweep;
+    paths.push({ d: describeDonutArc(cx, cy, R, rInner, start, end), fill: seg.color });
+    currentAngle = end - GAP_DEG;
+  });
+
+  const midAngle = (start: number, end: number) => (start + end) / 2;
+  let labelAngle = 90;
+  const labelCardW = 36;
+  const labelCardH = 20;
+  const labelCardRx = 6;
+  const labels: { cx: number; cy: number; text: string }[] = [];
+  DONUT_SEGMENTS.forEach((seg) => {
+    const sweep = (seg.pct / DONUT_TOTAL) * 360;
+    const start = labelAngle;
+    const end = labelAngle - sweep;
+    const mid = midAngle(start, end);
+    const rOnRing = (R + rInner) / 2;
+    const rad = (d: number) => (d * Math.PI) / 180;
+    const lx = cx + rOnRing * Math.cos(rad(mid));
+    const ly = cy - rOnRing * Math.sin(rad(mid));
+    labels.push({ cx: lx, cy: ly, text: `${seg.pct}%` });
+    labelAngle = end - GAP_DEG;
+  });
+
+  return (
+    <View style={styles.donutWrap}>
+      <Svg width={size} height={size} style={styles.donutSvg}>
+        {paths.map((p, i) => (
+          <Path key={i} d={p.d} fill={p.fill} stroke="#fff" strokeWidth={1.5} />
+        ))}
+        {labels.map((l, i) => (
+          <G key={i}>
+            <Rect
+              x={l.cx - labelCardW / 2}
+              y={l.cy - labelCardH / 2}
+              width={labelCardW}
+              height={labelCardH}
+              rx={labelCardRx}
+              ry={labelCardRx}
+              fill="#fff"
+            />
+            <SvgText
+              x={l.cx}
+              y={l.cy + 4}
+              fill="#000"
+              fontSize={11}
+              fontFamily={FONT_DEFAULT}
+              textAnchor="middle"
+            >
+              {l.text}
+            </SvgText>
+          </G>
+        ))}
+      </Svg>
+      <View style={styles.donutLegend}>
+        <View style={[styles.donutLegendBtn, { backgroundColor: IPSUM_COLOR }]}>
+          <AppText style={styles.donutLegendBtnTextWhite}>FEMALE</AppText>
+        </View>
+        <View style={[styles.donutLegendBtn, { backgroundColor: MALE_BLUE }]}>
+          <AppText style={styles.donutLegendBtnTextWhite}>MALE</AppText>
+        </View>
+        <View style={[styles.donutLegendBtn, { backgroundColor: ANONIM_COLOR }]}>
+          <AppText style={styles.donutLegendBtnTextDark}>ANONIM</AppText>
+        </View>
+      </View>
+    </View>
+  );
+}
+
 function smoothCurvePath(points: { x: number; y: number }[]): string {
   if (points.length < 2) return '';
   let d = `M ${points[0].x} ${points[0].y}`;
@@ -335,6 +440,13 @@ function AnalyticsWithDataContent() {
           </View>
         </View>
         <ViewsLineChart />
+      </View>
+
+      <View style={styles.viewsCard}>
+        <View style={styles.viewsCardHeader}>
+          <AppText style={styles.viewsCardTitle}>VIEWS</AppText>
+        </View>
+        <ViewsDonutChart />
       </View>
     </View>
   );
@@ -1445,5 +1557,34 @@ const styles = StyleSheet.create({
   },
   chartSvg: {
     alignSelf: 'center',
+  },
+  donutWrap: {
+    alignItems: 'center',
+    paddingVertical: 8,
+    gap: 20,
+  },
+  donutSvg: {
+    alignSelf: 'center',
+  },
+  donutLegend: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  donutLegendBtn: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  donutLegendBtnTextWhite: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 12,
+    color: '#fff',
+  },
+  donutLegendBtnTextDark: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 12,
+    color: '#4B5563',
   },
 });
