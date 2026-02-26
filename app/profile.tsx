@@ -112,8 +112,8 @@ function EmptyChannelState({
   onEmptyDemoClick 
 }: { 
   onCreateChannel: () => void, 
-  onDemoClick: () => void,
-  onEmptyDemoClick: () => void
+  onDemoClick?: () => void,
+  onEmptyDemoClick?: () => void
 }) {
   return (
     <View style={styles.emptyState}>
@@ -132,17 +132,21 @@ function EmptyChannelState({
         <AppText style={styles.emptyStateButtonText}>Start Your Channel</AppText>
       </Pressable>
 
-      <Pressable onPress={onDemoClick} style={{ marginTop: 24 }}>
-        <AppText style={{ fontFamily: FONT_DEFAULT, color: BRAND_BLUE, textDecorationLine: 'underline', fontSize: 14 }}>
-          my channel with posts (demo)
-        </AppText>
-      </Pressable>
+      {onDemoClick && (
+        <Pressable onPress={onDemoClick} style={{ marginTop: 24 }}>
+          <AppText style={{ fontFamily: FONT_DEFAULT, color: BRAND_BLUE, textDecorationLine: 'underline', fontSize: 14 }}>
+            Channel with posts (demo)
+          </AppText>
+        </Pressable>
+      )}
 
-      <Pressable onPress={onEmptyDemoClick} style={{ marginTop: 12 }}>
-        <AppText style={{ fontFamily: FONT_DEFAULT, color: BRAND_BLUE, textDecorationLine: 'underline', fontSize: 14 }}>
-          my channel with no posts demo
-        </AppText>
-      </Pressable>
+      {onEmptyDemoClick && (
+        <Pressable onPress={onEmptyDemoClick} style={{ marginTop: 12 }}>
+          <AppText style={{ fontFamily: FONT_DEFAULT, color: BRAND_BLUE, textDecorationLine: 'underline', fontSize: 14 }}>
+            Channel with no posts (demo)
+          </AppText>
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -574,8 +578,6 @@ export default function ProfileScreen() {
           ) : (
             <EmptyChannelState 
               onCreateChannel={() => setIsCreateChannelVisible(true)} 
-              onDemoClick={() => setDemoType('full')}
-              onEmptyDemoClick={() => setDemoType('empty')}
             />
           )}
         </View>
