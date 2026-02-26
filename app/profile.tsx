@@ -9,9 +9,11 @@ import {
     Image as RNImage,
     ScrollView,
     StyleSheet,
+    TextInput,
     View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Line, Path, Text as SvgText } from 'react-native-svg';
 
 import { AppText } from '@/components/app-text';
 import { CreateChannelSheet } from '@/components/create-channel-sheet';
@@ -111,11 +113,13 @@ function EmptyChannelState({
   onDemoClick,
   onEmptyDemoClick,
   onAnalyticsNoDataDemoClick,
+  onAnalyticsWithDataDemoClick,
 }: { 
   onCreateChannel: () => void, 
   onDemoClick?: () => void,
   onEmptyDemoClick?: () => void,
   onAnalyticsNoDataDemoClick?: () => void,
+  onAnalyticsWithDataDemoClick?: () => void,
 }) {
   return (
     <View style={styles.emptyState}>
@@ -154,6 +158,14 @@ function EmptyChannelState({
         <Pressable onPress={onAnalyticsNoDataDemoClick} style={{ marginTop: 12 }}>
           <AppText style={{ fontFamily: FONT_DEFAULT, color: BRAND_BLUE, textDecorationLine: 'underline', fontSize: 14 }}>
             Channel analytics with no data (demo)
+          </AppText>
+        </Pressable>
+      )}
+
+      {onAnalyticsWithDataDemoClick && (
+        <Pressable onPress={onAnalyticsWithDataDemoClick} style={{ marginTop: 12 }}>
+          <AppText style={{ fontFamily: FONT_DEFAULT, color: BRAND_BLUE, textDecorationLine: 'underline', fontSize: 14 }}>
+            Channel analytics with data (demo)
           </AppText>
         </Pressable>
       )}
@@ -200,6 +212,123 @@ function EmptyAnalyticsState() {
   );
 }
 
+// VIEWS chart data: LOREM (blue), IPSUM (brown) - approximate from design
+const LOREM_DATA = [20, 18, 15, 35, 65, 48, 55, 80, 55, 70, 82, 92];
+const IPSUM_DATA = [28, 25, 22, 32, 40, 45, 52, 58, 65, 78, 88, 98];
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+const CHART_PADDING = { left: 28, right: 16, top: 24, bottom: 28 };
+const Y_MIN = 10;
+const Y_MAX = 100;
+
+function ViewsLineChart() {
+  const chartWidth = SCREEN_WIDTH - H_PAD * 2 - CHART_PADDING.left - CHART_PADDING.right;
+  const chartHeight = 160;
+  const width = chartWidth + CHART_PADDING.left + CHART_PADDING.right;
+  const height = chartHeight + CHART_PADDING.top + CHART_PADDING.bottom;
+
+  const toX = (i: number) => CHART_PADDING.left + (i / 11) * chartWidth;
+  const toY = (v: number) => CHART_PADDING.top + chartHeight - ((v - Y_MIN) / (Y_MAX - Y_MIN)) * chartHeight;
+
+  const loremPath = LOREM_DATA.map((v, i) => `${i === 0 ? 'M' : 'L'} ${toX(i)} ${toY(v)}`).join(' ');
+  const ipsumPath = IPSUM_DATA.map((v, i) => `${i === 0 ? 'M' : 'L'} ${toX(i)} ${toY(v)}`).join(' ');
+
+  return (
+    <Svg width={width} height={height} style={styles.chartSvg}>
+      {/* Y-axis labels 10, 20, ... 100 */}
+      {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((v) => (
+        <SvgText
+          key={v}
+          x={CHART_PADDING.left - 6}
+          y={toY(v) + 4}
+          fill="#9CA3AF"
+          fontSize={10}
+          fontFamily={FONT_DEFAULT}
+          textAnchor="end"
+        >
+          {v}
+        </SvgText>
+      ))}
+      {/* X-axis labels JAN - DEC */}
+      {MONTHS.map((m, i) => (
+        <SvgText
+          key={m}
+          x={toX(i)}
+          y={height - 8}
+          fill="#9CA3AF"
+          fontSize={10}
+          fontFamily={FONT_DEFAULT}
+          textAnchor="middle"
+        >
+          {m}
+        </SvgText>
+      ))}
+      {/* Grid lines (horizontal) */}
+      {[20, 30, 40, 50, 60, 70, 80, 90].map((v) => (
+        <Line
+          key={v}
+          x1={CHART_PADDING.left}
+          y1={toY(v)}
+          x2={CHART_PADDING.left + chartWidth}
+          y2={toY(v)}
+          stroke="#F3F4F6"
+          strokeWidth={1}
+        />
+      ))}
+      {/* LOREM line (blue) */}
+      <Path d={loremPath} stroke={BRAND_BLUE} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      {/* IPSUM line (brown/orange) */}
+      <Path d={ipsumPath} stroke="#D97706" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+function AnalyticsWithDataContent() {
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  return (
+    <View style={styles.analyticsWithData}>
+      <AppText style={styles.analyticsSectionTitle}>Your channel in the last 30 days</AppText>
+      <View style={styles.dateRow}>
+        <View style={styles.dateFieldWrap}>
+          <AppText style={styles.dateLabel}>Start date</AppText>
+          <TextInput
+            style={[styles.dateInput, styles.dateInputActive]}
+            placeholder="MM/DD/YYYY"
+            placeholderTextColor="#9CA3AF"
+            value={startDate}
+            onChangeText={setStartDate}
+          />
+        </View>
+        <AppText style={styles.dateDash}>-</AppText>
+        <View style={styles.dateFieldWrap}>
+          <AppText style={styles.dateLabel}>End date</AppText>
+          <TextInput
+            style={styles.dateInput}
+            placeholder="MM/DD/YYYY"
+            placeholderTextColor="#9CA3AF"
+            value={endDate}
+            onChangeText={setEndDate}
+          />
+        </View>
+      </View>
+
+      <View style={styles.viewsCard}>
+        <View style={styles.viewsCardHeader}>
+          <AppText style={styles.viewsCardTitle}>VIEWS</AppText>
+          <View style={styles.viewsLegend}>
+            <View style={[styles.viewsLegendLine, { backgroundColor: BRAND_BLUE }]} />
+            <AppText style={styles.viewsLegendText}>LOREM</AppText>
+            <View style={[styles.viewsLegendLine, { backgroundColor: '#D97706' }]} />
+            <AppText style={styles.viewsLegendText}>IPSUM</AppText>
+          </View>
+        </View>
+        <ViewsLineChart />
+      </View>
+    </View>
+  );
+}
+
 export default function ProfileScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ initialTab?: ProfileTab }>();
@@ -210,8 +339,9 @@ export default function ProfileScreen() {
   // Demo state: 'none' | 'full' | 'empty'
   const [demoType, setDemoType] = useState<'none' | 'full' | 'empty'>('none');
   const [demoSubTab, setDemoSubTab] = useState<'Videos' | 'Shorts' | 'Post'>('Videos');
-  // Channel analytics no-data demo
+  // Channel analytics demos
   const [isAnalyticsNoDataDemo, setIsAnalyticsNoDataDemo] = useState(false);
+  const [isAnalyticsWithDataDemo, setIsAnalyticsWithDataDemo] = useState(false);
   const [analyticsSubTab, setAnalyticsSubTab] = useState<AnalyticsSubTab>('Overview');
 
   useEffect(() => {
@@ -223,6 +353,7 @@ export default function ProfileScreen() {
   useEffect(() => {
     if (profileTab !== 'CHANNEL ANALYTICS') {
       setIsAnalyticsNoDataDemo(false);
+      setIsAnalyticsWithDataDemo(false);
     }
   }, [profileTab]);
 
@@ -615,7 +746,7 @@ export default function ProfileScreen() {
                 onEmptyDemoClick={() => setDemoType('empty')}
               />
             )
-          ) : profileTab === 'CHANNEL ANALYTICS' && isAnalyticsNoDataDemo ? (
+          ) : profileTab === 'CHANNEL ANALYTICS' && (isAnalyticsNoDataDemo || isAnalyticsWithDataDemo) ? (
             <View style={styles.videosSection}>
               <View style={styles.subTabsWrap}>
                 {ANALYTICS_SUB_TABS.map((tab) => (
@@ -630,12 +761,17 @@ export default function ProfileScreen() {
                   </Pressable>
                 ))}
               </View>
-              <EmptyAnalyticsState />
+              {isAnalyticsWithDataDemo && analyticsSubTab === 'Overview' ? (
+                <AnalyticsWithDataContent />
+              ) : (
+                <EmptyAnalyticsState />
+              )}
             </View>
           ) : (
             <EmptyChannelState 
               onCreateChannel={() => setIsCreateChannelVisible(true)} 
               onAnalyticsNoDataDemoClick={profileTab === 'CHANNEL ANALYTICS' ? () => setIsAnalyticsNoDataDemo(true) : undefined}
+              onAnalyticsWithDataDemoClick={profileTab === 'CHANNEL ANALYTICS' ? () => setIsAnalyticsWithDataDemo(true) : undefined}
             />
           )}
         </View>
@@ -1212,5 +1348,87 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     maxWidth: 240,
     lineHeight: 20,
+  },
+  // Analytics with data
+  analyticsWithData: {
+    gap: 20,
+    paddingTop: 8,
+  },
+  analyticsSectionTitle: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 15,
+    color: '#111827',
+  },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 12,
+    flexWrap: 'wrap',
+  },
+  dateFieldWrap: {
+    flex: 1,
+    minWidth: 120,
+  },
+  dateLabel: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 12,
+    color: '#6B7280',
+    marginBottom: 6,
+  },
+  dateInput: {
+    height: 44,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    fontFamily: FONT_DEFAULT,
+    fontSize: 14,
+    color: '#111827',
+  },
+  dateInputActive: {
+    borderColor: BRAND_BLUE,
+  },
+  dateDash: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 16,
+    color: '#6B7280',
+    paddingBottom: 10,
+  },
+  viewsCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    padding: 16,
+    gap: 16,
+  },
+  viewsCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  viewsCardTitle: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 12,
+    color: '#111827',
+    letterSpacing: 0.5,
+  },
+  viewsLegend: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  viewsLegendLine: {
+    width: 20,
+    height: 3,
+    borderRadius: 2,
+  },
+  viewsLegendText: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 11,
+    color: '#6B7280',
+  },
+  chartSvg: {
+    alignSelf: 'center',
   },
 });
