@@ -106,7 +106,15 @@ const POSTS = [
   },
 ];
 
-function EmptyChannelState({ onCreateChannel, onDemoClick }: { onCreateChannel: () => void, onDemoClick: () => void }) {
+function EmptyChannelState({ 
+  onCreateChannel, 
+  onDemoClick,
+  onEmptyDemoClick 
+}: { 
+  onCreateChannel: () => void, 
+  onDemoClick: () => void,
+  onEmptyDemoClick: () => void
+}) {
   return (
     <View style={styles.emptyState}>
       <View style={styles.emptyStateImageWrap}>
@@ -129,6 +137,30 @@ function EmptyChannelState({ onCreateChannel, onDemoClick }: { onCreateChannel: 
           my channel with posts (demo)
         </AppText>
       </Pressable>
+
+      <Pressable onPress={onEmptyDemoClick} style={{ marginTop: 12 }}>
+        <AppText style={{ fontFamily: FONT_DEFAULT, color: BRAND_BLUE, textDecorationLine: 'underline', fontSize: 14 }}>
+          my channel with no posts demo
+        </AppText>
+      </Pressable>
+    </View>
+  );
+}
+
+function EmptyTabState({ type }: { type: 'Video' | 'Shorts' | 'Post' }) {
+  return (
+    <View style={styles.emptyTabState}>
+      <View style={styles.emptyTabImageWrap}>
+        <RNImage
+          source={require('@/assets/images/no_posts.png')}
+          style={styles.emptyTabImage}
+          resizeMode="contain"
+        />
+      </View>
+      <AppText style={styles.emptyTabTitle}>You Have no {type} Yet</AppText>
+      <AppText style={styles.emptyTabSubtitle}>
+        Start your content creator journey by posting your first {type}
+      </AppText>
     </View>
   );
 }
@@ -140,8 +172,8 @@ export default function ProfileScreen() {
   const [profileTab, setProfileTab] = useState<ProfileTab>(params.initialTab || 'HOME');
   const [isCreateChannelVisible, setIsCreateChannelVisible] = useState(false);
   
-  // Demo state
-  const [isDemoChannel, setIsDemoChannel] = useState(false);
+  // Demo state: 'none' | 'full' | 'empty'
+  const [demoType, setDemoType] = useState<'none' | 'full' | 'empty'>('none');
   const [demoSubTab, setDemoSubTab] = useState<'Videos' | 'Shorts' | 'Post'>('Videos');
 
   useEffect(() => {
@@ -342,7 +374,7 @@ export default function ProfileScreen() {
               </ScrollView>
             </View>
           ) : profileTab === 'MY CHANNEL' ? (
-            isDemoChannel ? (
+            demoType !== 'none' ? (
               <View style={styles.videosSection}>
                 {/* Sub Tabs */}
                 <View style={styles.subTabsWrap}>
@@ -358,178 +390,192 @@ export default function ProfileScreen() {
                 </View>
 
                 {demoSubTab === 'Videos' && (
-                  <>
-                    <AppText style={styles.videosSectionTitle}>Latest Video</AppText>
-                    
-                    {/* Latest Video Card */}
-                    <View style={styles.latestVideoCard}>
-                      <Image source={{ uri: CARD_IMAGE_1 }} style={styles.latestVideoImage} contentFit="cover" />
-                      <View style={styles.latestVideoOverlay}>
-                        <Ionicons name="play-circle" size={48} color="rgba(255,255,255,0.9)" />
-                      </View>
-                      <View style={styles.latestVideoContent}>
-                        <AppText style={styles.latestVideoTitle}>Studying the Deen is not a luxury it is a responsibility</AppText>
-                        <AppText style={styles.latestVideoDesc} numberOfLines={3}>
-                          It's not something we turn to only in hard times, or when life slows down, or when it feels convenient. It's a lifelong duty upon every believer because without knowledge, faith...
-                        </AppText>
-                        <View style={styles.videoCardStats}>
-                          <View style={styles.statItem}>
-                            <AppText style={styles.statNum}>13</AppText>
-                            <Ionicons name="heart-outline" size={16} color="#EF4444" />
-                          </View>
-                          <View style={styles.statItem}>
-                            <AppText style={styles.statNum}>3</AppText>
-                            <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
-                          </View>
-                          <View style={styles.statItem}>
-                            <AppText style={styles.statNum}>0</AppText>
-                            <Ionicons name="repeat" size={16} color="#9CA3AF" />
-                          </View>
+                  demoType === 'full' ? (
+                    <>
+                      <AppText style={styles.videosSectionTitle}>Latest Video</AppText>
+                      
+                      {/* Latest Video Card */}
+                      <View style={styles.latestVideoCard}>
+                        <Image source={{ uri: CARD_IMAGE_1 }} style={styles.latestVideoImage} contentFit="cover" />
+                        <View style={styles.latestVideoOverlay}>
+                          <Ionicons name="play-circle" size={48} color="rgba(255,255,255,0.9)" />
                         </View>
-                        <AppText style={styles.videoCardDate}>| Nov 28, 2025 |</AppText>
-                      </View>
-                    </View>
-
-                    <AppText style={[styles.videosSectionTitle, { marginTop: 24 }]}>Videos</AppText>
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={styles.videosScroll}
-                    >
-                      <View style={styles.videoCard}>
-                        <Image source={{ uri: CARD_IMAGE_1 }} style={styles.videoCardImage} contentFit="cover" />
-                        <AppText style={styles.videoCardTitle} numberOfLines={2}>
-                          Studying the Deen is not a luxury it is a responsibility
-                        </AppText>
-                        <AppText style={styles.videoCardDesc} numberOfLines={3}>
-                          It's not something we turn to only in hard times, or when life slows down, or when it
-                          feels convenient. It's a lifelong duty upon every believer because without knowledge,
-                          faith...
-                        </AppText>
-                        <View style={styles.videoCardStats}>
-                          <View style={styles.statItem}>
-                            <AppText style={styles.statNum}>13</AppText>
-                            <Ionicons name="heart-outline" size={16} color="#EF4444" />
-                          </View>
-                          <View style={styles.statItem}>
-                            <AppText style={styles.statNum}>3</AppText>
-                            <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
-                          </View>
-                          <View style={styles.statItem}>
-                            <AppText style={styles.statNum}>0</AppText>
-                            <Ionicons name="repeat" size={16} color="#9CA3AF" />
-                          </View>
-                        </View>
-                        <AppText style={styles.videoCardDate}>| Nov 28, 2025 |</AppText>
-                      </View>
-
-                      <View style={styles.videoCard}>
-                        <Image source={{ uri: CARD_IMAGE_2 }} style={styles.videoCardImage} contentFit="cover" />
-                        <AppText style={styles.videoCardTitle} numberOfLines={2}>
-                          My beautiful family
-                        </AppText>
-                        <AppText style={styles.videoCardDesc} numberOfLines={3}>
-                          Grateful for every moment we share together. Family is the greatest blessing from
-                          Allah.
-                        </AppText>
-                        <View style={styles.videoCardStats}>
-                          <View style={styles.statItem}>
-                            <AppText style={styles.statNum}>8</AppText>
-                            <Ionicons name="heart-outline" size={16} color="#EF4444" />
-                          </View>
-                          <View style={styles.statItem}>
-                            <AppText style={styles.statNum}>2</AppText>
-                            <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
-                          </View>
-                          <View style={styles.statItem}>
-                            <AppText style={styles.statNum}>1</AppText>
-                            <Ionicons name="repeat" size={16} color="#9CA3AF" />
-                          </View>
-                        </View>
-                        <AppText style={styles.videoCardDate}>| Nov 28, 2025 |</AppText>
-                      </View>
-                    </ScrollView>
-                  </>
-                )}
-
-                {demoSubTab === 'Shorts' && (
-                  <>
-                    <AppText style={styles.videosSectionTitle}>Short Videos</AppText>
-                    <View style={styles.shortsGrid}>
-                      {SHORTS.map((short) => (
-                        <Pressable key={short.id} style={styles.shortsCard}>
-                          <Image 
-                            source={{ uri: short.image }} 
-                            style={styles.shortsImage} 
-                            contentFit="cover"
-                            transition={200}
-                          />
-                          <View style={styles.shortsContent}>
-                            <AppText style={styles.shortsTitle} numberOfLines={3}>
-                              {short.title}
-                            </AppText>
-                            <View style={styles.shortsStats}>
-                              <View style={styles.statItem}>
-                                <AppText style={styles.statNum}>{short.likes}</AppText>
-                                <Ionicons name="heart-outline" size={14} color="#EF4444" />
-                              </View>
-                              <View style={styles.statItem}>
-                                <AppText style={styles.statNum}>{short.comments}</AppText>
-                                <Ionicons name="chatbubble-outline" size={14} color="#9CA3AF" />
-                              </View>
-                              <View style={styles.statItem}>
-                                <AppText style={styles.statNum}>{short.shares}</AppText>
-                                <Ionicons name="repeat" size={14} color="#9CA3AF" />
-                              </View>
-                            </View>
-                          </View>
-                        </Pressable>
-                      ))}
-                    </View>
-                  </>
-                )}
-
-                {demoSubTab === 'Post' && (
-                  <>
-                    <AppText style={styles.videosSectionTitle}>Posts</AppText>
-                    <View style={styles.postsList}>
-                      {POSTS.map((post) => (
-                        <View key={post.id} style={styles.postCard}>
-                          <AppText style={styles.postTitle}>{post.title}</AppText>
-                          <AppText style={styles.postContent} numberOfLines={4}>
-                            {post.content}
+                        <View style={styles.latestVideoContent}>
+                          <AppText style={styles.latestVideoTitle}>Studying the Deen is not a luxury it is a responsibility</AppText>
+                          <AppText style={styles.latestVideoDesc} numberOfLines={3}>
+                            It's not something we turn to only in hard times, or when life slows down, or when it feels convenient. It's a lifelong duty upon every believer because without knowledge, faith...
                           </AppText>
-                          <View style={styles.postStats}>
+                          <View style={styles.videoCardStats}>
                             <View style={styles.statItem}>
-                              <AppText style={styles.statNum}>{post.likes}</AppText>
+                              <AppText style={styles.statNum}>13</AppText>
                               <Ionicons name="heart-outline" size={16} color="#EF4444" />
                             </View>
                             <View style={styles.statItem}>
-                              <AppText style={styles.statNum}>{post.comments}</AppText>
+                              <AppText style={styles.statNum}>3</AppText>
                               <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
                             </View>
                             <View style={styles.statItem}>
-                              <AppText style={styles.statNum}>{post.shares}</AppText>
+                              <AppText style={styles.statNum}>0</AppText>
                               <Ionicons name="repeat" size={16} color="#9CA3AF" />
                             </View>
                           </View>
-                          <AppText style={styles.postDate}>| {post.date} |</AppText>
+                          <AppText style={styles.videoCardDate}>| Nov 28, 2025 |</AppText>
                         </View>
-                      ))}
-                    </View>
-                  </>
+                      </View>
+
+                      <AppText style={[styles.videosSectionTitle, { marginTop: 24 }]}>Videos</AppText>
+                      <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.videosScroll}
+                      >
+                        <View style={styles.videoCard}>
+                          <Image source={{ uri: CARD_IMAGE_1 }} style={styles.videoCardImage} contentFit="cover" />
+                          <AppText style={styles.videoCardTitle} numberOfLines={2}>
+                            Studying the Deen is not a luxury it is a responsibility
+                          </AppText>
+                          <AppText style={styles.videoCardDesc} numberOfLines={3}>
+                            It's not something we turn to only in hard times, or when life slows down, or when it
+                            feels convenient. It's a lifelong duty upon every believer because without knowledge,
+                            faith...
+                          </AppText>
+                          <View style={styles.videoCardStats}>
+                            <View style={styles.statItem}>
+                              <AppText style={styles.statNum}>13</AppText>
+                              <Ionicons name="heart-outline" size={16} color="#EF4444" />
+                            </View>
+                            <View style={styles.statItem}>
+                              <AppText style={styles.statNum}>3</AppText>
+                              <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
+                            </View>
+                            <View style={styles.statItem}>
+                              <AppText style={styles.statNum}>0</AppText>
+                              <Ionicons name="repeat" size={16} color="#9CA3AF" />
+                            </View>
+                          </View>
+                          <AppText style={styles.videoCardDate}>| Nov 28, 2025 |</AppText>
+                        </View>
+
+                        <View style={styles.videoCard}>
+                          <Image source={{ uri: CARD_IMAGE_2 }} style={styles.videoCardImage} contentFit="cover" />
+                          <AppText style={styles.videoCardTitle} numberOfLines={2}>
+                            My beautiful family
+                          </AppText>
+                          <AppText style={styles.videoCardDesc} numberOfLines={3}>
+                            Grateful for every moment we share together. Family is the greatest blessing from
+                            Allah.
+                          </AppText>
+                          <View style={styles.videoCardStats}>
+                            <View style={styles.statItem}>
+                              <AppText style={styles.statNum}>8</AppText>
+                              <Ionicons name="heart-outline" size={16} color="#EF4444" />
+                            </View>
+                            <View style={styles.statItem}>
+                              <AppText style={styles.statNum}>2</AppText>
+                              <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
+                            </View>
+                            <View style={styles.statItem}>
+                              <AppText style={styles.statNum}>1</AppText>
+                              <Ionicons name="repeat" size={16} color="#9CA3AF" />
+                            </View>
+                          </View>
+                          <AppText style={styles.videoCardDate}>| Nov 28, 2025 |</AppText>
+                        </View>
+                      </ScrollView>
+                    </>
+                  ) : (
+                    <EmptyTabState type="Video" />
+                  )
+                )}
+
+                {demoSubTab === 'Shorts' && (
+                  demoType === 'full' ? (
+                    <>
+                      <AppText style={styles.videosSectionTitle}>Short Videos</AppText>
+                      <View style={styles.shortsGrid}>
+                        {SHORTS.map((short) => (
+                          <Pressable key={short.id} style={styles.shortsCard}>
+                            <Image 
+                              source={{ uri: short.image }} 
+                              style={styles.shortsImage} 
+                              contentFit="cover"
+                              transition={200}
+                            />
+                            <View style={styles.shortsContent}>
+                              <AppText style={styles.shortsTitle} numberOfLines={3}>
+                                {short.title}
+                              </AppText>
+                              <View style={styles.shortsStats}>
+                                <View style={styles.statItem}>
+                                  <AppText style={styles.statNum}>{short.likes}</AppText>
+                                  <Ionicons name="heart-outline" size={14} color="#EF4444" />
+                                </View>
+                                <View style={styles.statItem}>
+                                  <AppText style={styles.statNum}>{short.comments}</AppText>
+                                  <Ionicons name="chatbubble-outline" size={14} color="#9CA3AF" />
+                                </View>
+                                <View style={styles.statItem}>
+                                  <AppText style={styles.statNum}>{short.shares}</AppText>
+                                  <Ionicons name="repeat" size={14} color="#9CA3AF" />
+                                </View>
+                              </View>
+                            </View>
+                          </Pressable>
+                        ))}
+                      </View>
+                    </>
+                  ) : (
+                    <EmptyTabState type="Shorts" />
+                  )
+                )}
+
+                {demoSubTab === 'Post' && (
+                  demoType === 'full' ? (
+                    <>
+                      <AppText style={styles.videosSectionTitle}>Posts</AppText>
+                      <View style={styles.postsList}>
+                        {POSTS.map((post) => (
+                          <View key={post.id} style={styles.postCard}>
+                            <AppText style={styles.postTitle}>{post.title}</AppText>
+                            <AppText style={styles.postContent} numberOfLines={4}>
+                              {post.content}
+                            </AppText>
+                            <View style={styles.postStats}>
+                              <View style={styles.statItem}>
+                                <AppText style={styles.statNum}>{post.likes}</AppText>
+                                <Ionicons name="heart-outline" size={16} color="#EF4444" />
+                              </View>
+                              <View style={styles.statItem}>
+                                <AppText style={styles.statNum}>{post.comments}</AppText>
+                                <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
+                              </View>
+                              <View style={styles.statItem}>
+                                <AppText style={styles.statNum}>{post.shares}</AppText>
+                                <Ionicons name="repeat" size={16} color="#9CA3AF" />
+                              </View>
+                            </View>
+                            <AppText style={styles.postDate}>| {post.date} |</AppText>
+                          </View>
+                        ))}
+                      </View>
+                    </>
+                  ) : (
+                    <EmptyTabState type="Post" />
+                  )
                 )}
               </View>
             ) : (
               <EmptyChannelState 
                 onCreateChannel={() => setIsCreateChannelVisible(true)} 
-                onDemoClick={() => setIsDemoChannel(true)}
+                onDemoClick={() => setDemoType('full')}
+                onEmptyDemoClick={() => setDemoType('empty')}
               />
             )
           ) : (
             <EmptyChannelState 
               onCreateChannel={() => setIsCreateChannelVisible(true)} 
-              onDemoClick={() => setIsDemoChannel(true)}
+              onDemoClick={() => setDemoType('full')}
+              onEmptyDemoClick={() => setDemoType('empty')}
             />
           )}
         </View>
@@ -1073,5 +1119,38 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     marginTop: 4,
     includeFontPadding: false,
+  },
+  // Empty Tab Styles
+  emptyTabState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 48,
+    paddingHorizontal: 24,
+  },
+  emptyTabImageWrap: {
+    width: 200,
+    height: 200,
+    marginBottom: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTabImage: {
+    width: '100%',
+    height: '100%',
+  },
+  emptyTabTitle: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 18,
+    color: '#111827',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyTabSubtitle: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+    maxWidth: 240,
+    lineHeight: 20,
   },
 });
