@@ -247,7 +247,7 @@ const ENGAGEMENT_DONUT_SEGMENTS = [
 // Item performance chart: Y 0–90, Jan–Dec, peak at Sep (~89), tooltip 95%
 const ITEM_PERF_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const ITEM_PERF_DATA = [10, 25, 50, 75, 55, 30, 45, 70, 89, 75, 60, 50];
-const ITEM_PERF_PADDING = { left: 36, right: 24, top: 32, bottom: 28 };
+const ITEM_PERF_PADDING = { left: 32, right: 32, top: 32, bottom: 28 };
 const GRID_COLOR = '#E5E7EB';
 const TOOLTIP_BG = '#93C5FD';
 
@@ -421,6 +421,8 @@ function ViewsLineChart({
 }
 
 function ItemPerformanceChart() {
+  const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null);
+
   const chartWidth = SCREEN_WIDTH - H_PAD * 2 - ITEM_PERF_PADDING.left - ITEM_PERF_PADDING.right;
   const chartHeight = 250;
   const width = chartWidth + ITEM_PERF_PADDING.left + ITEM_PERF_PADDING.right;
@@ -434,115 +436,128 @@ function ItemPerformanceChart() {
 
   const points = ITEM_PERF_DATA.map((v, i) => ({ x: toX(i), y: toY(v) }));
   const linePath = smoothCurvePath(points);
-  const peakIndex = 8;
-  const peakX = toX(peakIndex);
-  const peakY = toY(ITEM_PERF_DATA[peakIndex]);
+
+  const handleChartPress = (e: { nativeEvent: { locationX: number; locationY: number } }) => {
+    const { locationX, locationY } = e.nativeEvent;
+    const inChartX = locationX >= left && locationX <= left + chartWidth;
+    const inChartY = locationY >= top && locationY <= bottom;
+    if (!inChartX || !inChartY) return;
+    const index = Math.max(0, Math.min(11, Math.round(((locationX - left) / chartWidth) * 11)));
+    setSelectedPointIndex(index);
+  };
 
   const tooltipW = 44;
   const tooltipH = 26;
-  const tooltipY = peakY - tooltipH - 10;
+  const showTooltip = selectedPointIndex !== null;
+  const pointX = showTooltip ? toX(selectedPointIndex) : 0;
+  const pointY = showTooltip ? toY(ITEM_PERF_DATA[selectedPointIndex!]) : 0;
+  const tooltipY = showTooltip ? pointY - tooltipH - 10 : 0;
+  const pointValue = showTooltip ? ITEM_PERF_DATA[selectedPointIndex!] : 0;
 
   return (
     <View style={styles.itemPerfCard}>
       <AppText style={styles.itemPerfTitle}>Item performance</AppText>
-      <Svg width={width} height={height} style={styles.chartSvg}>
-        {/* Horizontal grid lines (0, 10, ..., 90) */}
-        {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((v) => {
-          const y = toY(v);
-          return (
-            <Line
-              key={v}
-              x1={left}
-              y1={y}
-              x2={left + chartWidth}
-              y2={y}
-              stroke={GRID_COLOR}
-              strokeWidth={1}
-            />
-          );
-        })}
-        {/* Y-axis labels (00, 10, ..., 90) */}
-        {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((v) => (
-          <SvgText key={v} x={left - 8} y={toY(v) + 4} fill={LABEL_COLOR} fontSize={10} textAnchor="end">
-            {v === 0 ? '00' : String(v)}
-          </SvgText>
-        ))}
-        {/* X-axis labels */}
-        {ITEM_PERF_MONTHS.map((m, i) => (
-          <SvgText key={m} x={toX(i)} y={height - 8} fill={LABEL_COLOR} fontSize={10} textAnchor="middle">
-            {m}
-          </SvgText>
-        ))}
-        {/* Dashed vertical guide from peak to X-axis */}
-        <Line
-          x1={peakX}
-          y1={peakY}
-          x2={peakX}
-          y2={bottom}
-          stroke={BRAND_BLUE}
-          strokeWidth={1.5}
-          strokeDasharray="4 3"
-        />
-        {/* Dashed horizontal guide from peak to Y-axis */}
-        <Line
-          x1={left}
-          y1={peakY}
-          x2={peakX}
-          y2={peakY}
-          stroke={BRAND_BLUE}
-          strokeWidth={1.5}
-          strokeDasharray="4 3"
-        />
-        {/* Blue line */}
-        <Path
-          d={linePath}
-          stroke={BRAND_BLUE}
-          strokeWidth={2}
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {/* Tooltip (blue chip + 95%) with soft black shadow */}
-        <Defs>
-          <Filter id="tooltipShadow" x="-50%" y="-50%" width="200%" height="200%">
-            <FeOffset dx={2} dy={3} />
-            <FeGaussianBlur stdDeviation={3} />
-          </Filter>
-        </Defs>
-        <G>
-          <Rect
-            x={peakX - tooltipW / 2}
-            y={tooltipY}
-            width={tooltipW}
-            height={tooltipH}
-            rx={10}
-            ry={10}
-            fill="rgba(0,0,0,0.35)"
-            filter="url(#tooltipShadow)"
+      <Pressable onPress={handleChartPress} style={{ width, height }}>
+        <Svg width={width} height={height} style={styles.chartSvg}>
+          {/* Horizontal grid lines (0, 10, ..., 90) */}
+          {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((v) => {
+            const y = toY(v);
+            return (
+              <Line
+                key={v}
+                x1={left}
+                y1={y}
+                x2={left + chartWidth}
+                y2={y}
+                stroke={GRID_COLOR}
+                strokeWidth={1}
+              />
+            );
+          })}
+          {/* Y-axis labels (00, 10, ..., 90) */}
+          {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((v) => (
+            <SvgText key={v} x={left - 8} y={toY(v) + 4} fill={LABEL_COLOR} fontSize={10} textAnchor="end">
+              {v === 0 ? '00' : String(v)}
+            </SvgText>
+          ))}
+          {/* X-axis labels */}
+          {ITEM_PERF_MONTHS.map((m, i) => (
+            <SvgText key={m} x={toX(i)} y={height - 8} fill={LABEL_COLOR} fontSize={10} textAnchor="middle">
+              {m}
+            </SvgText>
+          ))}
+          {/* Blue line */}
+          <Path
+            d={linePath}
+            stroke={BRAND_BLUE}
+            strokeWidth={2}
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
-          <Rect
-            x={peakX - tooltipW / 2}
-            y={tooltipY}
-            width={tooltipW}
-            height={tooltipH}
-            rx={10}
-            ry={10}
-            fill={BRAND_BLUE}
-          />
-          <SvgText
-            x={peakX}
-            y={tooltipY + tooltipH / 2 + 4}
-            fill="#fff"
-            fontSize={12}
-            fontFamily={FONT_SEMIBOLD}
-            textAnchor="middle"
-          >
-            95%
-          </SvgText>
-        </G>
-        {/* Blue circle at peak */}
-        <Circle cx={peakX} cy={peakY} r={5} fill={BRAND_BLUE} />
-      </Svg>
+          {/* Tooltip, guides and dot only when user has tapped */}
+          {showTooltip && (
+            <>
+              <Line
+                x1={pointX}
+                y1={pointY}
+                x2={pointX}
+                y2={bottom}
+                stroke={BRAND_BLUE}
+                strokeWidth={1.5}
+                strokeDasharray="4 3"
+              />
+              <Line
+                x1={left}
+                y1={pointY}
+                x2={pointX}
+                y2={pointY}
+                stroke={BRAND_BLUE}
+                strokeWidth={1.5}
+                strokeDasharray="4 3"
+              />
+              <Defs>
+                <Filter id="tooltipShadow" x="-50%" y="-50%" width="200%" height="200%">
+                  <FeOffset dx={2} dy={3} />
+                  <FeGaussianBlur stdDeviation={3} />
+                </Filter>
+              </Defs>
+              <G>
+                <Rect
+                  x={pointX - tooltipW / 2}
+                  y={tooltipY}
+                  width={tooltipW}
+                  height={tooltipH}
+                  rx={10}
+                  ry={10}
+                  fill="rgba(0,0,0,0.35)"
+                  filter="url(#tooltipShadow)"
+                />
+                <Rect
+                  x={pointX - tooltipW / 2}
+                  y={tooltipY}
+                  width={tooltipW}
+                  height={tooltipH}
+                  rx={10}
+                  ry={10}
+                  fill={BRAND_BLUE}
+                />
+                <SvgText
+                  x={pointX - 5}
+                  y={tooltipY + tooltipH / 2 + 5}
+                  fill="#fff"
+                  fontSize={12}
+                  fontFamily={FONT_SEMIBOLD}
+                  textAnchor="middle"
+                >
+                  {pointValue}%
+                </SvgText>
+              </G>
+              <Circle cx={pointX} cy={pointY} r={5} fill={BRAND_BLUE} />
+            </>
+          )}
+        </Svg>
+      </Pressable>
     </View>
   );
 }
