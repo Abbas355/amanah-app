@@ -235,6 +235,15 @@ const DONUT_SEGMENTS = [
   { label: 'ANONIM', pct: 24, color: ANONIM_COLOR },
 ];
 
+// Engagement rate chart data (different from VIEWS)
+const ENGAGEMENT_LINE_A = [30, 35, 40, 38, 55, 60, 58, 70, 75, 78, 82, 85];
+const ENGAGEMENT_LINE_B = [15, 22, 28, 35, 42, 48, 52, 55, 62, 68, 72, 80];
+const ENGAGEMENT_DONUT_SEGMENTS = [
+  { label: 'MALE', pct: 45, color: MALE_BLUE },
+  { label: 'FEMALE', pct: 30, color: FEMALE_COLOR },
+  { label: 'ANONIM', pct: 25, color: ANONIM_COLOR },
+];
+
 function describeDonutArc(cx: number, cy: number, rOuter: number, rInner: number, startDeg: number, endDeg: number): string {
   const rad = (d: number) => (d * Math.PI) / 180;
   const x = (r: number, d: number) => cx + r * Math.cos(rad(d));
@@ -247,17 +256,20 @@ function describeDonutArc(cx: number, cy: number, rOuter: number, rInner: number
   return `M ${startOut} A ${rOuter} ${rOuter} 0 ${large} 1 ${endOut} L ${endIn} A ${rInner} ${rInner} 0 ${large} 0 ${startIn} Z`;
 }
 
-function ViewsDonutChart() {
+type DonutSegment = { label: string; pct: number; color: string };
+
+function ViewsDonutChart({ segments = DONUT_SEGMENTS }: { segments?: DonutSegment[] }) {
   const size = Math.min(SCREEN_WIDTH - H_PAD * 2 - 80, 220) + 2;
   const cx = size / 2;
   const cy = size / 2;
   const R = size / 2 - 16;
   const rInner = R * 0.5;
+  const total = segments.reduce((s, seg) => s + seg.pct, 0);
 
   let currentAngle = 90;
   const paths: { d: string; fill: string }[] = [];
-  DONUT_SEGMENTS.forEach((seg) => {
-    const sweep = (seg.pct / DONUT_TOTAL) * 360;
+  segments.forEach((seg) => {
+    const sweep = (seg.pct / total) * 360;
     const start = currentAngle;
     const end = currentAngle - sweep;
     paths.push({ d: describeDonutArc(cx, cy, R, rInner, start, end), fill: seg.color });
@@ -270,8 +282,8 @@ function ViewsDonutChart() {
   const labelCardH = 20;
   const labelCardRx = 6;
   const labels: { cx: number; cy: number; text: string }[] = [];
-  DONUT_SEGMENTS.forEach((seg) => {
-    const sweep = (seg.pct / DONUT_TOTAL) * 360;
+  segments.forEach((seg) => {
+    const sweep = (seg.pct / total) * 360;
     const start = labelAngle;
     const end = labelAngle - sweep;
     const mid = midAngle(start, end);
@@ -344,7 +356,10 @@ function smoothCurvePath(points: { x: number; y: number }[]): string {
   return d;
 }
 
-function ViewsLineChart() {
+function ViewsLineChart({
+  dataA = LOREM_DATA,
+  dataB = IPSUM_DATA,
+}: { dataA?: number[]; dataB?: number[] } = {}) {
   const chartWidth = SCREEN_WIDTH - H_PAD * 2 - CHART_PADDING.left - CHART_PADDING.right;
   const chartHeight = 168;
   const width = chartWidth + CHART_PADDING.left + CHART_PADDING.right;
@@ -355,8 +370,8 @@ function ViewsLineChart() {
   const toX = (i: number) => left + (i / 11) * chartWidth;
   const toY = (v: number) => CHART_PADDING.top + chartHeight - ((v - Y_MIN) / (Y_MAX - Y_MIN)) * chartHeight;
 
-  const loremPoints = LOREM_DATA.map((v, i) => ({ x: toX(i), y: toY(v) }));
-  const ipsumPoints = IPSUM_DATA.map((v, i) => ({ x: toX(i), y: toY(v) }));
+  const loremPoints = dataA.map((v, i) => ({ x: toX(i), y: toY(v) }));
+  const ipsumPoints = dataB.map((v, i) => ({ x: toX(i), y: toY(v) }));
   const loremPath = smoothCurvePath(loremPoints);
   const ipsumPath = smoothCurvePath(ipsumPoints);
 
@@ -398,6 +413,13 @@ function ViewsLineChart() {
   );
 }
 
+function formatDateInput(text: string): string {
+  const digits = text.replace(/\D/g, '').slice(0, 8);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+}
+
 function AnalyticsWithDataContent() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -415,7 +437,9 @@ function AnalyticsWithDataContent() {
             placeholder="MM/DD/YYYY"
             placeholderTextColor="#9CA3AF"
             value={startDate}
-            onChangeText={setStartDate}
+            onChangeText={(t) => setStartDate(formatDateInput(t))}
+            keyboardType="number-pad"
+            maxLength={10}
             onFocus={() => setStartFocused(true)}
             onBlur={() => setStartFocused(false)}
           />
@@ -428,7 +452,9 @@ function AnalyticsWithDataContent() {
             placeholder="MM/DD/YYYY"
             placeholderTextColor="#9CA3AF"
             value={endDate}
-            onChangeText={setEndDate}
+            onChangeText={(t) => setEndDate(formatDateInput(t))}
+            keyboardType="number-pad"
+            maxLength={10}
             onFocus={() => setEndFocused(true)}
             onBlur={() => setEndFocused(false)}
           />
@@ -453,6 +479,26 @@ function AnalyticsWithDataContent() {
           <AppText style={styles.viewsCardTitle}>VIEWS</AppText>
         </View>
         <ViewsDonutChart />
+      </View>
+
+      <View style={styles.viewsCard}>
+        <View style={styles.viewsCardHeader}>
+          <AppText style={styles.viewsCardTitle}>Engagement rate</AppText>
+          <View style={styles.viewsLegend}>
+            <View style={[styles.viewsLegendLine, { backgroundColor: BRAND_BLUE }]} />
+            <AppText style={[styles.viewsLegendText, { color: BRAND_BLUE }]}>CLICKS</AppText>
+            <View style={[styles.viewsLegendLine, { backgroundColor: IPSUM_COLOR }]} />
+            <AppText style={[styles.viewsLegendText, { color: IPSUM_COLOR }]}>LIKES</AppText>
+          </View>
+        </View>
+        <ViewsLineChart dataA={ENGAGEMENT_LINE_A} dataB={ENGAGEMENT_LINE_B} />
+      </View>
+
+      <View style={styles.viewsCard}>
+        <View style={styles.viewsCardHeader}>
+          <AppText style={styles.viewsCardTitle}>Engagement rate</AppText>
+        </View>
+        <ViewsDonutChart segments={ENGAGEMENT_DONUT_SEGMENTS} />
       </View>
     </View>
   );
@@ -890,7 +936,7 @@ export default function ProfileScreen() {
                   </Pressable>
                 ))}
               </View>
-              {isAnalyticsWithDataDemo && analyticsSubTab === 'Overview' ? (
+              {isAnalyticsWithDataDemo && (analyticsSubTab === 'Overview' || analyticsSubTab === 'Content') ? (
                 <AnalyticsWithDataContent />
               ) : (
                 <EmptyAnalyticsState />
@@ -1484,7 +1530,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   analyticsSectionTitle: {
-    fontFamily: FONT_DEFAULT,
+    fontFamily: FONT_SEMIBOLD,
     fontSize: 15,
     color: '#111827',
   },
