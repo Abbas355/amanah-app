@@ -212,72 +212,83 @@ function EmptyAnalyticsState() {
   );
 }
 
-// VIEWS chart data: LOREM (blue), IPSUM (brown) - approximate from design
-const LOREM_DATA = [20, 18, 15, 35, 65, 48, 55, 80, 55, 70, 82, 92];
-const IPSUM_DATA = [28, 25, 22, 32, 40, 45, 52, 58, 65, 78, 88, 98];
+// VIEWS chart data: LOREM (blue), IPSUM (gold) - matching design picture
+const LOREM_DATA = [20, 18, 15, 36, 62, 54, 53, 83, 72, 77, 85, 92];
+const IPSUM_DATA = [25, 24, 23, 31, 40, 34, 28, 46, 60, 74, 88, 100];
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-const CHART_PADDING = { left: 28, right: 16, top: 24, bottom: 28 };
+const CHART_PADDING = { left: 40, right: 40, top: 28, bottom: 32 };
 const Y_MIN = 10;
 const Y_MAX = 100;
+const AXIS_COLOR = '#93C5FD';
+const LABEL_COLOR = '#6B7280';
+const IPSUM_COLOR = '#C3A670';
+
+function smoothCurvePath(points: { x: number; y: number }[]): string {
+  if (points.length < 2) return '';
+  let d = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i];
+    const p1 = points[i + 1];
+    const p2 = points[i + 2];
+    const cx0 = p0.x + (p1.x - p0.x) / 3;
+    const cy0 = p0.y + (p1.y - p0.y) / 3;
+    const cx1 = p2 != null ? p1.x - (p2.x - p1.x) / 3 : p1.x;
+    const cy1 = p2 != null ? p1.y - (p2.y - p1.y) / 3 : p1.y;
+    d += ` C ${cx0} ${cy0} ${cx1} ${cy1} ${p1.x} ${p1.y}`;
+  }
+  return d;
+}
 
 function ViewsLineChart() {
   const chartWidth = SCREEN_WIDTH - H_PAD * 2 - CHART_PADDING.left - CHART_PADDING.right;
-  const chartHeight = 160;
+  const chartHeight = 168;
   const width = chartWidth + CHART_PADDING.left + CHART_PADDING.right;
   const height = chartHeight + CHART_PADDING.top + CHART_PADDING.bottom;
+  const left = CHART_PADDING.left;
+  const bottom = CHART_PADDING.top + chartHeight;
 
-  const toX = (i: number) => CHART_PADDING.left + (i / 11) * chartWidth;
+  const toX = (i: number) => left + (i / 11) * chartWidth;
   const toY = (v: number) => CHART_PADDING.top + chartHeight - ((v - Y_MIN) / (Y_MAX - Y_MIN)) * chartHeight;
 
-  const loremPath = LOREM_DATA.map((v, i) => `${i === 0 ? 'M' : 'L'} ${toX(i)} ${toY(v)}`).join(' ');
-  const ipsumPath = IPSUM_DATA.map((v, i) => `${i === 0 ? 'M' : 'L'} ${toX(i)} ${toY(v)}`).join(' ');
+  const loremPoints = LOREM_DATA.map((v, i) => ({ x: toX(i), y: toY(v) }));
+  const ipsumPoints = IPSUM_DATA.map((v, i) => ({ x: toX(i), y: toY(v) }));
+  const loremPath = smoothCurvePath(loremPoints);
+  const ipsumPath = smoothCurvePath(ipsumPoints);
 
   return (
     <Svg width={width} height={height} style={styles.chartSvg}>
-      {/* Y-axis labels 10, 20, ... 100 */}
+      {/* Y-axis ticks */}
+      {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((v) => {
+        const y = toY(v);
+        return <Line key={v} x1={left} y1={y} x2={left - 6} y2={y} stroke={AXIS_COLOR} strokeWidth={1.5} />;
+      })}
+      {/* X-axis ticks */}
+      {MONTHS.map((_, i) => {
+        const x = toX(i);
+        return <Line key={i} x1={x} y1={bottom} x2={x} y2={bottom + 6} stroke={AXIS_COLOR} strokeWidth={1.5} />;
+      })}
+      {/* Y-axis line */}
+      <Line x1={left} y1={CHART_PADDING.top} x2={left} y2={bottom} stroke={AXIS_COLOR} strokeWidth={1.5} />
+      {/* X-axis line */}
+      <Line x1={left} y1={bottom} x2={left + chartWidth} y2={bottom} stroke={AXIS_COLOR} strokeWidth={1.5} />
+
+      {/* Y-axis labels */}
       {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((v) => (
-        <SvgText
-          key={v}
-          x={CHART_PADDING.left - 6}
-          y={toY(v) + 4}
-          fill="#9CA3AF"
-          fontSize={10}
-          fontFamily={FONT_DEFAULT}
-          textAnchor="end"
-        >
+        <SvgText key={v} x={left - 10} y={toY(v) + 4} fill={LABEL_COLOR} fontSize={10} textAnchor="end">
           {v}
         </SvgText>
       ))}
-      {/* X-axis labels JAN - DEC */}
+      {/* X-axis labels */}
       {MONTHS.map((m, i) => (
-        <SvgText
-          key={m}
-          x={toX(i)}
-          y={height - 8}
-          fill="#9CA3AF"
-          fontSize={10}
-          fontFamily={FONT_DEFAULT}
-          textAnchor="middle"
-        >
+        <SvgText key={m} x={toX(i)} y={height - 10} fill={LABEL_COLOR} fontSize={10} textAnchor="middle">
           {m}
         </SvgText>
       ))}
-      {/* Grid lines (horizontal) */}
-      {[20, 30, 40, 50, 60, 70, 80, 90].map((v) => (
-        <Line
-          key={v}
-          x1={CHART_PADDING.left}
-          y1={toY(v)}
-          x2={CHART_PADDING.left + chartWidth}
-          y2={toY(v)}
-          stroke="#F3F4F6"
-          strokeWidth={1}
-        />
-      ))}
-      {/* LOREM line (blue) */}
-      <Path d={loremPath} stroke={BRAND_BLUE} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      {/* IPSUM line (brown/orange) */}
-      <Path d={ipsumPath} stroke="#D97706" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+
+      {/* LOREM line (blue) - smooth */}
+      <Path d={loremPath} stroke={BRAND_BLUE} strokeWidth={1.5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      {/* IPSUM line (gold) - smooth */}
+      <Path d={ipsumPath} stroke={IPSUM_COLOR} strokeWidth={1.5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </Svg>
   );
 }
@@ -318,9 +329,9 @@ function AnalyticsWithDataContent() {
           <AppText style={styles.viewsCardTitle}>VIEWS</AppText>
           <View style={styles.viewsLegend}>
             <View style={[styles.viewsLegendLine, { backgroundColor: BRAND_BLUE }]} />
-            <AppText style={styles.viewsLegendText}>LOREM</AppText>
-            <View style={[styles.viewsLegendLine, { backgroundColor: '#D97706' }]} />
-            <AppText style={styles.viewsLegendText}>IPSUM</AppText>
+            <AppText style={[styles.viewsLegendText, { color: BRAND_BLUE }]}>LOREM</AppText>
+            <View style={[styles.viewsLegendLine, { backgroundColor: IPSUM_COLOR }]} />
+            <AppText style={[styles.viewsLegendText, { color: IPSUM_COLOR }]}>IPSUM</AppText>
           </View>
         </View>
         <ViewsLineChart />
@@ -1401,6 +1412,11 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
     padding: 16,
     gap: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
   },
   viewsCardHeader: {
     flexDirection: 'row',
@@ -1409,24 +1425,23 @@ const styles = StyleSheet.create({
   },
   viewsCardTitle: {
     fontFamily: FONT_SEMIBOLD,
-    fontSize: 12,
+    fontSize: 13,
     color: '#111827',
     letterSpacing: 0.5,
   },
   viewsLegend: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 14,
   },
   viewsLegendLine: {
-    width: 20,
+    width: 24,
     height: 3,
     borderRadius: 2,
   },
   viewsLegendText: {
     fontFamily: FONT_DEFAULT,
     fontSize: 11,
-    color: '#6B7280',
   },
   chartSvg: {
     alignSelf: 'center',
