@@ -837,6 +837,7 @@ export default function ProfileScreen() {
               Feel free to share{'\n'}your thoughts
             </AppText>
 
+            {/* // its just ui now */}
             <View style={styles.shareBox}>
               <View style={styles.shareIconWrap}>
                 <RNImage
