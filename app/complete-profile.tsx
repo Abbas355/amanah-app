@@ -56,7 +56,7 @@ export default function CompleteProfileScreen() {
   const [position, setPosition] = useState('');
   const [company, setCompany] = useState('');
   
-  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
   const [coverImageUri, setCoverImageUri] = useState<string | null>(null);
   const [profileImageUri, setProfileImageUri] = useState<string | null>(null);
   const [uploadSheet, setUploadSheet] = useState<{ visible: boolean; type: 'cover' | 'profile' }>({
@@ -84,7 +84,7 @@ export default function CompleteProfileScreen() {
         if (data.field != null) setField(data.field);
         if (data.position != null) setPosition(data.position);
         if (data.company != null) setCompany(data.company);
-        if (Array.isArray(data.status)) setSelectedStatus(data.status);
+        if (Array.isArray(data.status) && data.status[0]) setSelectedStatus(data.status[0]);
         if (data.coverImageUri != null) setCoverImageUri(data.coverImageUri);
         if (data.profileImageUri != null) setProfileImageUri(data.profileImageUri);
       } catch (_) {}
@@ -116,17 +116,13 @@ export default function CompleteProfileScreen() {
     return `${m.toString().padStart(2, '0')}/${d.toString().padStart(2, '0')}/${y}`;
   };
   const toggleStatus = (id: string) => {
-    if (selectedStatus.includes(id)) {
-      setSelectedStatus(selectedStatus.filter(s => s !== id));
-    } else {
-      setSelectedStatus([...selectedStatus, id]);
-    }
+    setSelectedStatus((prev) => (prev === id ? '' : id));
   };
 
   const personalInfoComplete = firstName.trim() !== '' && lastName.trim() !== '' && email.trim() !== '';
   const educationComplete = university.trim() !== '' && field.trim() !== '';
   const professionalComplete = position.trim() !== '' && company.trim() !== '';
-  const statusComplete = selectedStatus.length > 0;
+  const statusComplete = selectedStatus !== '';
   const completionPercent = [personalInfoComplete, educationComplete, professionalComplete, statusComplete].filter(Boolean).length * 25;
   const GAUGE_SIZE = 180;
   const GAUGE_STROKE = 10;
@@ -148,7 +144,7 @@ export default function CompleteProfileScreen() {
       field: field.trim(),
       position: position.trim(),
       company: company.trim(),
-      status: selectedStatus,
+      status: selectedStatus ? [selectedStatus] : [],
       coverImageUri: coverImageUri ?? undefined,
       profileImageUri: profileImageUri ?? undefined,
     };
@@ -407,7 +403,7 @@ export default function CompleteProfileScreen() {
           <AppText style={styles.sectionTitle}>Your Status</AppText>
           <View style={styles.statusGrid}>
             {STATUS_OPTIONS.map((status) => {
-              const isSelected = selectedStatus.includes(status.id);
+              const isSelected = selectedStatus === status.id;
               return (
                 <Pressable 
                   key={status.id} 
