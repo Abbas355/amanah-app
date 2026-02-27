@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Dimensions,
     Platform,
@@ -11,6 +11,7 @@ import {
     Image as RNImage,
     ScrollView,
     StyleSheet,
+    TextInput,
     View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -44,6 +45,8 @@ export default function CompleteProfileScreen() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [bio, setBio] = useState('');
   const [dob, setDob] = useState(new Date('1999-02-25'));
   const [showDatePicker, setShowDatePicker] = useState(false);
   
@@ -60,6 +63,33 @@ export default function CompleteProfileScreen() {
     visible: false,
     type: 'cover',
   });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const raw = await AsyncStorage.getItem('profile');
+        if (!raw) return;
+        const data = JSON.parse(raw) as {
+          firstName?: string; lastName?: string; email?: string; phone?: string; dob?: string;
+          university?: string; field?: string; position?: string; company?: string;
+          status?: string[]; coverImageUri?: string; profileImageUri?: string; bio?: string;
+        };
+        if (data.firstName != null) setFirstName(data.firstName);
+        if (data.lastName != null) setLastName(data.lastName);
+        if (data.email != null) setEmail(data.email);
+        if (data.phone != null) setPhone(data.phone);
+        if (data.bio != null) setBio(data.bio);
+        if (data.dob != null) setDob(new Date(data.dob));
+        if (data.university != null) setUniversity(data.university);
+        if (data.field != null) setField(data.field);
+        if (data.position != null) setPosition(data.position);
+        if (data.company != null) setCompany(data.company);
+        if (Array.isArray(data.status)) setSelectedStatus(data.status);
+        if (data.coverImageUri != null) setCoverImageUri(data.coverImageUri);
+        if (data.profileImageUri != null) setProfileImageUri(data.profileImageUri);
+      } catch (_) {}
+    })();
+  }, []);
 
   const handleImageSelected = (uri: string) => {
     if (uploadSheet.type === 'cover') {
@@ -111,6 +141,8 @@ export default function CompleteProfileScreen() {
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       email: email.trim(),
+      phone: phone.trim(),
+      bio: bio.trim(),
       dob: dob.toISOString(),
       university: university.trim(),
       field: field.trim(),
@@ -286,6 +318,27 @@ export default function CompleteProfileScreen() {
             onChangeText={setEmail}
             style={styles.inputBorder}
           />
+          <FormInput 
+            label="Phone number" 
+            placeholder="+383 44 999 211" 
+            value={phone} 
+            onChangeText={setPhone}
+            style={styles.inputBorder}
+            keyboardType="phone-pad"
+          />
+          <View style={styles.bioFieldWrap}>
+            <AppText style={styles.bioFieldLabel}>Bio</AppText>
+            <TextInput
+              placeholder="In remembrance of Allah, hearts find peace"
+              placeholderTextColor="#B2B2B2"
+              value={bio}
+              onChangeText={setBio}
+              style={[styles.bioInput, styles.inputBorder]}
+              multiline
+              numberOfLines={3}
+              textAlignVertical="top"
+            />
+          </View>
           <FormInput 
             label="Date of birth (MM/DD/YY)" 
             placeholder="Date of birth" 
@@ -685,5 +738,26 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: BRAND_BLUE,
     backgroundColor: '#fff',
+  },
+  bioFieldWrap: {
+    gap: 6,
+  },
+  bioFieldLabel: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#6B7280',
+    paddingLeft: 12,
+  },
+  bioInput: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 16,
+    color: '#111827',
+    backgroundColor: '#EFEFEF',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    minHeight: 88,
+    includeFontPadding: false,
   },
 });

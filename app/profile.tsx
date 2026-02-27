@@ -1,8 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Dimensions,
   Pressable,
@@ -742,12 +744,29 @@ function AnalyticsAudienceContent() {
   );
 }
 
+const STATUS_ID_TO_LABEL: Record<string, string> = {
+  engaged: 'Engaged',
+  father: 'Father',
+  single: 'Single',
+  relationship: 'Relationship',
+  divorced: 'Divorced',
+  mother: 'Mother',
+  married: 'Married',
+};
+
+type SavedProfile = {
+  firstName?: string; lastName?: string; email?: string; phone?: string; dob?: string; bio?: string;
+  university?: string; field?: string; position?: string; company?: string;
+  status?: string[]; coverImageUri?: string; profileImageUri?: string;
+};
+
 export default function ProfileScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ initialTab?: ProfileTab }>();
   const insets = useSafeAreaInsets();
   const [profileTab, setProfileTab] = useState<ProfileTab>(params.initialTab || 'HOME');
   const [isCreateChannelVisible, setIsCreateChannelVisible] = useState(false);
+  const [savedProfile, setSavedProfile] = useState<SavedProfile | null>(null);
 
   // Demo state: 'none' | 'full' | 'empty'
   const [demoType, setDemoType] = useState<'none' | 'full' | 'empty'>('none');
@@ -756,6 +775,20 @@ export default function ProfileScreen() {
   const [isAnalyticsNoDataDemo, setIsAnalyticsNoDataDemo] = useState(false);
   const [isAnalyticsWithDataDemo, setIsAnalyticsWithDataDemo] = useState(false);
   const [analyticsSubTab, setAnalyticsSubTab] = useState<AnalyticsSubTab>('Overview');
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const raw = await AsyncStorage.getItem('profile');
+          if (raw) setSavedProfile(JSON.parse(raw) as SavedProfile);
+          else setSavedProfile(null);
+        } catch (_) {
+          setSavedProfile(null);
+        }
+      })();
+    }, [])
+  );
 
   useEffect(() => {
     if (params.initialTab && PROFILE_TABS.includes(params.initialTab)) {
@@ -769,6 +802,28 @@ export default function ProfileScreen() {
       setIsAnalyticsWithDataDemo(false);
     }
   }, [profileTab]);
+
+  const displayName = savedProfile
+    ? [savedProfile.firstName, savedProfile.lastName].filter(Boolean).join(' ') || 'Your Name'
+    : 'Erza Bilalli';
+  const displayBio = savedProfile?.bio ?? 'In remembrance of Allah, hearts find peace 🌙🕋';
+  const formatDisplayDob = (isoDate?: string) => {
+    if (!isoDate) return null;
+    try {
+      const d = new Date(isoDate);
+      const day = d.getDate().toString().padStart(2, '0');
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day}.${month}.${year}`;
+    } catch {
+      return null;
+    }
+  };
+  const displayDob = formatDisplayDob(savedProfile?.dob);
+  const displayStatus = savedProfile?.status?.length
+    ? savedProfile.status.map((id) => STATUS_ID_TO_LABEL[id]).filter(Boolean).join(', ')
+    : null;
+  const displayPhone = savedProfile?.phone?.trim() || null;
 
   return (
     <View style={styles.container}>
@@ -788,18 +843,22 @@ export default function ProfileScreen() {
           <View style={styles.section}>
             {/* Cover Card */}
             <View style={styles.coverWrap}>
-              <AppText style={styles.coverText}>رمضان كريم</AppText>
+              {savedProfile?.coverImageUri ? (
+                <Image source={{ uri: savedProfile.coverImageUri }} style={StyleSheet.absoluteFill} contentFit="cover" />
+              ) : (
+                <AppText style={styles.coverText}>رمضان كريم</AppText>
+              )}
             </View>
 
             {/* User Info Bar: PFP + name + @handle */}
             <View style={styles.userBar}>
               <View style={styles.userAvatarWrap}>
-                <Image source={{ uri: PROFILE_IMAGE }} style={styles.userAvatar} contentFit="cover" />
+                <Image source={{ uri: savedProfile?.profileImageUri ?? PROFILE_IMAGE }} style={styles.userAvatar} contentFit="cover" />
               </View>
               <View style={styles.userInfo}>
                 <View style={styles.nameHandleWrap}>
                   <View style={styles.nameRow}>
-                    <AppText style={styles.userName}>Erza Bilalli</AppText>
+                    <AppText style={styles.userName}>{displayName}</AppText>
                     <RNImage
                       source={require('@/assets/images/verified.png')}
                       style={styles.verifiedBadge}
@@ -824,10 +883,10 @@ export default function ProfileScreen() {
             </Pressable>
 
             <View style={styles.bioBlock}>
-              <AppText style={styles.bioText}>In remembrance of Allah, hearts find peace 🌙🕋</AppText>
-              <AppText style={styles.bioMeta}>25.02.1999</AppText>
-              <AppText style={styles.bioMeta}>Married</AppText>
-              <AppText style={styles.bioMeta}>+383 44 999 211</AppText>
+              <AppText style={styles.bioText}>{displayBio}</AppText>
+              {displayDob ? <AppText style={styles.bioMeta}>{displayDob}</AppText> : null}
+              {displayStatus ? <AppText style={styles.bioMeta}>{displayStatus}</AppText> : null}
+              {displayPhone ? <AppText style={styles.bioMeta}>{displayPhone}</AppText> : null}
             </View>
           </View>
 
@@ -1250,6 +1309,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
+    position: 'relative',
+    overflow: 'hidden',
   },
   coverText: {
     fontFamily: FONT_DEFAULT,

@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Pressable, Image as RNImage, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -16,20 +18,38 @@ export function DashboardHeader() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [savedProfile, setSavedProfile] = useState<{ firstName?: string; profileImageUri?: string } | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const raw = await AsyncStorage.getItem('profile');
+          if (raw) setSavedProfile(JSON.parse(raw));
+          else setSavedProfile(null);
+        } catch (_) {
+          setSavedProfile(null);
+        }
+      })();
+    }, [])
+  );
+
+  const displayName = savedProfile?.firstName ?? 'Erza';
+  const avatarUri = savedProfile?.profileImageUri ?? PROFILE_IMAGE;
 
   return (
     <>
       <View style={[styles.header, { paddingTop: 16 + insets.top }]}>
         <Pressable style={styles.left} onPress={() => setIsMenuVisible(true)}>
           <View style={styles.avatarWrap}>
-            <Image source={{ uri: PROFILE_IMAGE }} style={styles.avatar} contentFit="cover" />
+            <Image source={{ uri: avatarUri }} style={styles.avatar} contentFit="cover" />
           </View>
           <View style={styles.welcomeWrap}>
             <View style={styles.welcomeRow}>
               <AppText style={styles.welcomeLabel}>Welcome</AppText>
               <Ionicons name="chevron-forward" size={14} color="#111827" />
             </View>
-            <AppText style={styles.userName}>Erza</AppText>
+            <AppText style={styles.userName}>{displayName}</AppText>
           </View>
         </Pressable>
 
