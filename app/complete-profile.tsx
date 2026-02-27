@@ -1,18 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  Dimensions,
-  Platform,
-  Pressable,
-  Image as RNImage,
-  ScrollView,
-  StyleSheet,
-  View,
+    Dimensions,
+    Platform,
+    Pressable,
+    Image as RNImage,
+    ScrollView,
+    StyleSheet,
+    View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Circle } from 'react-native-svg';
 
 import { AppText } from '@/components/app-text';
 import { DashboardHeader } from '@/components/dashboard-header';
@@ -39,27 +41,32 @@ export default function CompleteProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const [firstName, setFirstName] = useState('Erza');
-  const [lastName, setLastName] = useState('Bilalli');
-  const [email, setEmail] = useState('erzabilallil@gmail.com');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [dob, setDob] = useState(new Date('1999-02-25'));
   const [showDatePicker, setShowDatePicker] = useState(false);
   
-  const [university, setUniversity] = useState('UBT');
-  const [field, setField] = useState('Graphic Design');
+  const [university, setUniversity] = useState('');
+  const [field, setField] = useState('');
   
   const [position, setPosition] = useState('');
   const [company, setCompany] = useState('');
   
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+  const [coverImageUri, setCoverImageUri] = useState<string | null>(null);
+  const [profileImageUri, setProfileImageUri] = useState<string | null>(null);
   const [uploadSheet, setUploadSheet] = useState<{ visible: boolean; type: 'cover' | 'profile' }>({
     visible: false,
     type: 'cover',
   });
 
   const handleImageSelected = (uri: string) => {
-    console.log('Selected image:', uri, 'for', uploadSheet.type);
-    // Here you would typically upload the image or update local state
+    if (uploadSheet.type === 'cover') {
+      setCoverImageUri(uri);
+    } else {
+      setProfileImageUri(uri);
+    }
   };
 
   const handleDateChange = (event: { type: string }, selected?: Date) => {
@@ -86,6 +93,42 @@ export default function CompleteProfileScreen() {
     }
   };
 
+  const personalInfoComplete = firstName.trim() !== '' && lastName.trim() !== '' && email.trim() !== '';
+  const educationComplete = university.trim() !== '' && field.trim() !== '';
+  const professionalComplete = position.trim() !== '' && company.trim() !== '';
+  const statusComplete = selectedStatus.length > 0;
+  const completionPercent = [personalInfoComplete, educationComplete, professionalComplete, statusComplete].filter(Boolean).length * 25;
+  const GAUGE_SIZE = 180;
+  const GAUGE_STROKE = 10;
+  const GAUGE_R = (GAUGE_SIZE / 2) - (GAUGE_STROKE / 2);
+  const GAUGE_CIRCUMFERENCE = 2 * Math.PI * GAUGE_R;
+  const GAUGE_ARC_270 = (270 / 360) * GAUGE_CIRCUMFERENCE;
+  const GAUGE_ARC_90 = (90 / 360) * GAUGE_CIRCUMFERENCE;
+  const gaugeProgressLength = (completionPercent / 100) * GAUGE_ARC_270;
+
+  const handleSave = async () => {
+    const profileData = {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      dob: dob.toISOString(),
+      university: university.trim(),
+      field: field.trim(),
+      position: position.trim(),
+      company: company.trim(),
+      status: selectedStatus,
+      coverImageUri: coverImageUri ?? undefined,
+      profileImageUri: profileImageUri ?? undefined,
+    };
+    console.log('Profile saved:', profileData);
+    try {
+      await AsyncStorage.setItem('profile', JSON.stringify(profileData));
+      router.back();
+    } catch (e) {
+      console.error('Failed to save profile:', e);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <DashboardHeader />
@@ -103,7 +146,11 @@ export default function CompleteProfileScreen() {
         {/* Cover & Profile Section */}
         <View style={styles.topSection}>
           <View style={styles.coverWrap}>
-            <AppText style={styles.coverText}>رمضان كريم</AppText>
+            {coverImageUri ? (
+              <Image source={{ uri: coverImageUri }} style={StyleSheet.absoluteFill} contentFit="cover" />
+            ) : (
+              <AppText style={styles.coverText}>رمضان كريم</AppText>
+            )}
             <Pressable 
               style={styles.editCoverButton}
               onPress={() => setUploadSheet({ visible: true, type: 'cover' })}
@@ -118,11 +165,11 @@ export default function CompleteProfileScreen() {
           
           <View style={styles.profileRow}>
             <View style={styles.avatarWrap}>
-              <Image source={{ uri: PROFILE_IMAGE }} style={styles.avatar} contentFit="cover" />
+              <Image source={{ uri: profileImageUri ?? PROFILE_IMAGE }} style={styles.avatar} contentFit="cover" />
             </View>
             <View style={styles.nameInfo}>
               <View style={styles.nameRow}>
-                <AppText style={styles.userName}>Erza Bilalli</AppText>
+                <AppText style={styles.userName}>{[firstName, lastName].filter(Boolean).join(' ') || 'Your Name'}</AppText>
                 <Image 
                   source={require('@/assets/images/verified.png')} 
                   style={styles.verifiedBadge} 
@@ -147,32 +194,70 @@ export default function CompleteProfileScreen() {
           <AppText style={styles.cardTitle}>Complete your Profile</AppText>
           
           <View style={styles.chartContainer}>
-            <View style={styles.gaugeContainer}>
-              <View style={styles.gaugeTrack} />
-              <View style={styles.gaugeProgress} />
+            <View style={[styles.gaugeContainer, { width: GAUGE_SIZE, height: GAUGE_SIZE }]}>
+              <Svg width={GAUGE_SIZE} height={GAUGE_SIZE} style={styles.gaugeSvg}>
+                <Circle
+                  cx={GAUGE_SIZE / 2}
+                  cy={GAUGE_SIZE / 2}
+                  r={GAUGE_R}
+                  fill="transparent"
+                  stroke="#EBF5FF"
+                  strokeWidth={GAUGE_STROKE}
+                  strokeDasharray={`${GAUGE_ARC_270} ${GAUGE_ARC_90}`}
+                  transform={`rotate(-225 ${GAUGE_SIZE / 2} ${GAUGE_SIZE / 2})`}
+                />
+                <Circle
+                  cx={GAUGE_SIZE / 2}
+                  cy={GAUGE_SIZE / 2}
+                  r={GAUGE_R}
+                  fill="transparent"
+                  stroke={BRAND_BLUE}
+                  strokeWidth={GAUGE_STROKE}
+                  strokeDasharray={`${gaugeProgressLength} ${GAUGE_CIRCUMFERENCE}`}
+                  transform={`rotate(-225 ${GAUGE_SIZE / 2} ${GAUGE_SIZE / 2})`}
+                />
+              </Svg>
               <View style={styles.gaugeCenter}>
-                <AppText style={styles.chartPercent}>60%</AppText>
+                <AppText style={styles.chartPercent}>{completionPercent}%</AppText>
               </View>
               <AppText style={styles.gaugeLabelLeft}>00</AppText>
               <AppText style={styles.gaugeLabelRight}>100</AppText>
             </View>
-            <AppText style={styles.chartText}>Your profile is{'\n'}completed 60%</AppText>
+            <AppText style={styles.chartText}>Your profile is{'\n'}completed {completionPercent}%</AppText>
           </View>
 
           <View style={styles.stepsList}>
             <View style={styles.stepItem}>
-              <AppText style={styles.stepText}>Personal Info</AppText>
-              <Ionicons name="checkmark" size={18} color={BRAND_BLUE} />
+              <AppText style={[styles.stepText, !personalInfoComplete && styles.stepTextInactive]}>Personal Info</AppText>
+              {personalInfoComplete ? (
+                <Ionicons name="checkmark" size={18} color={BRAND_BLUE} />
+              ) : (
+                <View style={styles.stepIconEmpty} />
+              )}
             </View>
             <View style={styles.stepItem}>
-              <AppText style={styles.stepText}>Education</AppText>
-              <Ionicons name="checkmark" size={18} color={BRAND_BLUE} />
+              <AppText style={[styles.stepText, !educationComplete && styles.stepTextInactive]}>Education</AppText>
+              {educationComplete ? (
+                <Ionicons name="checkmark" size={18} color={BRAND_BLUE} />
+              ) : (
+                <View style={styles.stepIconEmpty} />
+              )}
             </View>
             <View style={styles.stepItem}>
-              <AppText style={[styles.stepText, styles.stepTextInactive]}>Professional Position</AppText>
+              <AppText style={[styles.stepText, !professionalComplete && styles.stepTextInactive]}>Professional Position</AppText>
+              {professionalComplete ? (
+                <Ionicons name="checkmark" size={18} color={BRAND_BLUE} />
+              ) : (
+                <View style={styles.stepIconEmpty} />
+              )}
             </View>
             <View style={styles.stepItem}>
-              <AppText style={[styles.stepText, styles.stepTextInactive]}>Your Status</AppText>
+              <AppText style={[styles.stepText, !statusComplete && styles.stepTextInactive]}>Your Status</AppText>
+              {statusComplete ? (
+                <Ionicons name="checkmark" size={18} color={BRAND_BLUE} />
+              ) : (
+                <View style={styles.stepIconEmpty} />
+              )}
             </View>
           </View>
         </View>
@@ -288,7 +373,7 @@ export default function CompleteProfileScreen() {
           </View>
         </View>
 
-        <Pressable style={[styles.saveButton, { marginHorizontal: 24 }]} onPress={() => router.back()}>
+        <Pressable style={[styles.saveButton, { marginHorizontal: 24 }]} onPress={handleSave}>
           <AppText style={styles.saveButtonText}>Save</AppText>
         </Pressable>
 
@@ -343,6 +428,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 16,
     position: 'relative',
+    overflow: 'hidden',
   },
   coverText: {
     fontFamily: FONT_DEFAULT,
@@ -456,26 +542,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     position: 'relative',
   },
-  gaugeTrack: {
+  gaugeSvg: {
     position: 'absolute',
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    borderWidth: 10,
-    borderColor: '#EBF5FF',
-    borderBottomColor: 'transparent',
-    // No rotation needed for gap at bottom
-  },
-  gaugeProgress: {
-    position: 'absolute',
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    borderWidth: 10,
-    borderColor: 'transparent',
-    borderLeftColor: BRAND_BLUE,
-    borderTopColor: BRAND_BLUE,
-    // No rotation needed to start at 225 deg
   },
   gaugeCenter: {
     position: 'absolute',
@@ -528,6 +596,13 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     fontWeight: '400',
     fontFamily: FONT_DEFAULT,
+  },
+  stepIconEmpty: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 1.5,
+    borderColor: '#D1D5DB',
   },
   formSection: {
     marginBottom: 32,
