@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,6 +34,19 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
   const [firstName, setFirstName] = useState('Erza Bilalli');
   const [handle, setHandle] = useState('Erzablb189');
   const [pictureTab, setPictureTab] = useState<'AVATAR' | 'IMAGE'>('AVATAR');
+  const [coverImageUri, setCoverImageUri] = useState<string | null>(null);
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') return;
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 1,
+    });
+    if (!result.canceled) setCoverImageUri(result.assets[0].uri);
+  };
 
   const handleClose = () => {
     setStep('form');
@@ -119,14 +133,17 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
           </View>
         ) : (
           <View style={styles.uploadArea}>
-            <View style={styles.uploadBox}>
+            <Pressable style={styles.uploadBox} onPress={pickImage}>
               <Ionicons name="cloud-upload-outline" size={48} color={BRAND_BLUE} />
               <AppText style={styles.uploadBoxText}>Click below and upload your Cover</AppText>
               <AppText style={styles.uploadBoxSubtext}>png, and jpg accepted</AppText>
-              <Pressable style={styles.uploadActionButton}>
+              <View style={styles.uploadActionButton}>
                 <AppText style={styles.uploadActionButtonText}>Upload</AppText>
-              </Pressable>
-            </View>
+              </View>
+            </Pressable>
+            {coverImageUri && (
+              <Image source={{ uri: coverImageUri }} style={styles.coverPreview} contentFit="cover" />
+            )}
           </View>
         )}
       </View>
@@ -394,5 +411,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlignVertical: 'center',
     includeFontPadding: false,
+  },
+  coverPreview: {
+    width: '100%',
+    height: 160,
+    borderRadius: 12,
+    marginTop: 16,
+    backgroundColor: '#F3F4F6',
   },
 });
