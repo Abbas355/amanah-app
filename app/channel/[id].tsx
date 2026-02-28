@@ -16,6 +16,7 @@ import { ChannelDetailsCard } from '@/components/channel-details-card';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { ScreenGradient } from '@/components/screen-gradient';
 import { FONT_BOLD, FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
+import { SHORTS, VIDEOS } from '@/constants/videos';
 import type { ChannelDetails } from '@/types/channel';
 import { MOCK_CHANNEL_WITH_DATA } from '@/types/channel';
 
@@ -31,8 +32,6 @@ const CHANNEL_MAP: Record<string, ChannelDetails> = {
   '6': { ...MOCK_CHANNEL_WITH_DATA, id: '6', name: 'Twinies', handle: 'twinies1', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&fit=crop', banner: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1200&fit=crop', subscribers: 150, totalViews: 3000, videoCount: 3 },
 };
 const PROFILE_IMAGE = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop';
-const CARD_IMAGE_1 = 'https://picsum.photos/id/1018/600/600';
-const CARD_IMAGE_2 = 'https://picsum.photos/id/1060/600/600';
 
 const PROFILE_TABS = ['Videos', 'Shorts', 'Post', 'Playlists'] as const;
 type ProfileTab = (typeof PROFILE_TABS)[number];
@@ -42,40 +41,6 @@ const H_PAD = 24;
 const CARD_WIDTH = Math.min(300, SCREEN_WIDTH - H_PAD * 2 - 24);
 const SHORTS_CARD_WIDTH = (SCREEN_WIDTH - H_PAD * 2 - 16) / 2;
 
-const SHORTS = [
-  {
-    id: '1',
-    title: 'Studying the Deen is not a luxury it is a responsibility',
-    image: 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=600&auto=format&fit=crop',
-    likes: '13',
-    comments: '3',
-    shares: '0',
-  },
-  {
-    id: '2',
-    title: 'Daily Dua for peace and guidance',
-    image: 'https://images.unsplash.com/photo-1585036156171-384164a8c675?q=80&w=600&auto=format&fit=crop',
-    likes: '45',
-    comments: '12',
-    shares: '5',
-  },
-  {
-    id: '3',
-    title: 'Beautiful Quran Recitation',
-    image: 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?q=80&w=600&auto=format&fit=crop',
-    likes: '120',
-    comments: '8',
-    shares: '15',
-  },
-  {
-    id: '4',
-    title: 'Visiting the historic Mosque',
-    image: 'https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=600&auto=format&fit=crop',
-    likes: '89',
-    comments: '4',
-    shares: '2',
-  },
-];
 
 const POSTS = [
   {
@@ -216,33 +181,38 @@ export default function ChannelProfileScreen() {
                 <AppText style={styles.videosSectionTitle}>Latest Video</AppText>
                 
                 {/* Latest Video Large Card */}
-                <View style={styles.latestVideoCard}>
-                   <Image source={{ uri: CARD_IMAGE_1 }} style={styles.latestVideoImage} contentFit="cover" />
-                   <View style={styles.latestVideoOverlay}>
+                <Pressable
+                  style={styles.latestVideoCard}
+                  onPress={() => router.push({ pathname: '/video-player' as any, params: { uri: VIDEOS[0].videoUri, title: VIDEOS[0].title } })}
+                >
+                  <View style={styles.latestVideoImageWrap}>
+                    <Image source={{ uri: VIDEOS[0].image }} style={styles.latestVideoImage} contentFit="cover" />
+                    <View style={styles.latestVideoOverlay}>
                       <Ionicons name="play-circle" size={48} color="rgba(255,255,255,0.9)" />
-                   </View>
-                   <View style={styles.latestVideoContent}>
-                      <AppText style={styles.latestVideoTitle}>Studying the Deen Is not a luxury it is a responsibility</AppText>
-                      <AppText style={styles.latestVideoDesc} numberOfLines={3}>
-                        It's not something we turn to only in hard times, or when life slows down, or when it feels convenient. It's a lifelong duty upon every believer because without knowledge, faith...
-                      </AppText>
-                      <View style={styles.videoCardStats}>
-                        <View style={styles.statItem}>
-                          <AppText style={styles.statNum}>13</AppText>
-                          <Ionicons name="heart-outline" size={16} color="#EF4444" />
-                        </View>
-                        <View style={styles.statItem}>
-                          <AppText style={styles.statNum}>3</AppText>
-                          <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
-                        </View>
-                        <View style={styles.statItem}>
-                          <AppText style={styles.statNum}>0</AppText>
-                          <Ionicons name="repeat" size={16} color="#9CA3AF" />
-                        </View>
+                    </View>
+                  </View>
+                  <View style={styles.latestVideoContent}>
+                    <AppText style={styles.latestVideoTitle}>{VIDEOS[0].title}</AppText>
+                    <AppText style={styles.latestVideoDesc} numberOfLines={3}>
+                      It's not something we turn to only in hard times, or when life slows down...
+                    </AppText>
+                    <View style={styles.videoCardStats}>
+                      <View style={styles.statItem}>
+                        <AppText style={styles.statNum}>{VIDEOS[0].likes}</AppText>
+                        <Ionicons name="heart-outline" size={16} color="#EF4444" />
                       </View>
-                      <AppText style={styles.videoCardDate}>| Nov 28, 2025 |</AppText>
-                   </View>
-                </View>
+                      <View style={styles.statItem}>
+                        <AppText style={styles.statNum}>{VIDEOS[0].comments}</AppText>
+                        <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
+                      </View>
+                      <View style={styles.statItem}>
+                        <AppText style={styles.statNum}>{VIDEOS[0].shares}</AppText>
+                        <Ionicons name="repeat" size={16} color="#9CA3AF" />
+                      </View>
+                    </View>
+                    <AppText style={styles.videoCardDate}>| {VIDEOS[0].date} |</AppText>
+                  </View>
+                </Pressable>
 
                 <AppText style={[styles.videosSectionTitle, { marginTop: 24 }]}>Videos</AppText>
                 <ScrollView
@@ -250,58 +220,39 @@ export default function ChannelProfileScreen() {
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.videosScroll}
                 >
-                  <View style={styles.videoCard}>
-                    <Image source={{ uri: CARD_IMAGE_1 }} style={styles.videoCardImage} contentFit="cover" />
-                    <AppText style={styles.videoCardTitle} numberOfLines={2}>
-                      Studying the Deen is not a luxury it is a responsibility
-                    </AppText>
-                    <AppText style={styles.videoCardDesc} numberOfLines={3}>
-                      It's not something we turn to only in hard times, or when life slows down, or when it
-                      feels convenient. It's a lifelong duty upon every believer because without knowledge,
-                      faith...
-                    </AppText>
-                    <View style={styles.videoCardStats}>
-                      <View style={styles.statItem}>
-                        <AppText style={styles.statNum}>13</AppText>
-                        <Ionicons name="heart-outline" size={16} color="#EF4444" />
+                  {VIDEOS.map((video) => (
+                    <Pressable
+                      key={video.id}
+                      style={styles.videoCard}
+                      onPress={() => router.push({ pathname: '/video-player' as any, params: { uri: video.videoUri, title: video.title } })}
+                    >
+                      <View style={styles.videoCardImageWrap}>
+                        <Image source={{ uri: video.image }} style={styles.videoCardImage} contentFit="cover" />
+                        <View style={styles.videoCardPlayBadge}>
+                          <Ionicons name="play-circle" size={40} color="rgba(255,255,255,0.95)" />
+                        </View>
                       </View>
-                      <View style={styles.statItem}>
-                        <AppText style={styles.statNum}>3</AppText>
-                        <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
+                      <AppText style={styles.videoCardTitle} numberOfLines={2}>{video.title}</AppText>
+                      <AppText style={styles.videoCardDesc} numberOfLines={3}>
+                        It's not something we turn to only in hard times, or when life slows down...
+                      </AppText>
+                      <View style={styles.videoCardStats}>
+                        <View style={styles.statItem}>
+                          <AppText style={styles.statNum}>{video.likes}</AppText>
+                          <Ionicons name="heart-outline" size={16} color="#EF4444" />
+                        </View>
+                        <View style={styles.statItem}>
+                          <AppText style={styles.statNum}>{video.comments}</AppText>
+                          <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
+                        </View>
+                        <View style={styles.statItem}>
+                          <AppText style={styles.statNum}>{video.shares}</AppText>
+                          <Ionicons name="repeat" size={16} color="#9CA3AF" />
+                        </View>
                       </View>
-                      <View style={styles.statItem}>
-                        <AppText style={styles.statNum}>0</AppText>
-                        <Ionicons name="repeat" size={16} color="#9CA3AF" />
-                      </View>
-                    </View>
-                    <AppText style={styles.videoCardDate}>| Nov 28, 2025 |</AppText>
-                  </View>
-
-                  <View style={styles.videoCard}>
-                    <Image source={{ uri: CARD_IMAGE_2 }} style={styles.videoCardImage} contentFit="cover" />
-                    <AppText style={styles.videoCardTitle} numberOfLines={2}>
-                      My beautiful family
-                    </AppText>
-                    <AppText style={styles.videoCardDesc} numberOfLines={3}>
-                      Grateful for every moment we share together. Family is the greatest blessing from
-                      Allah.
-                    </AppText>
-                    <View style={styles.videoCardStats}>
-                      <View style={styles.statItem}>
-                        <AppText style={styles.statNum}>8</AppText>
-                        <Ionicons name="heart-outline" size={16} color="#EF4444" />
-                      </View>
-                      <View style={styles.statItem}>
-                        <AppText style={styles.statNum}>2</AppText>
-                        <Ionicons name="chatbubble-outline" size={16} color="#9CA3AF" />
-                      </View>
-                      <View style={styles.statItem}>
-                        <AppText style={styles.statNum}>1</AppText>
-                        <Ionicons name="repeat" size={16} color="#9CA3AF" />
-                      </View>
-                    </View>
-                    <AppText style={styles.videoCardDate}>| Nov 28, 2025 |</AppText>
-                  </View>
+                      <AppText style={styles.videoCardDate}>| {video.date} |</AppText>
+                    </Pressable>
+                  ))}
                 </ScrollView>
               </View>
             )}
@@ -311,13 +262,22 @@ export default function ChannelProfileScreen() {
                 <AppText style={styles.videosSectionTitle}>Short Videos</AppText>
                 <View style={styles.shortsGrid}>
                   {SHORTS.map((short) => (
-                    <Pressable key={short.id} style={styles.shortsCard}>
-                      <Image 
-                        source={{ uri: short.image }} 
-                        style={styles.shortsImage} 
-                        contentFit="cover"
-                        transition={200}
-                      />
+                    <Pressable
+                      key={short.id}
+                      style={styles.shortsCard}
+                      onPress={() => router.push({ pathname: '/video-player' as any, params: { uri: short.videoUri, title: short.title } })}
+                    >
+                      <View style={styles.shortsImageWrap}>
+                        <Image 
+                          source={{ uri: short.image }} 
+                          style={styles.shortsImage} 
+                          contentFit="cover"
+                          transition={200}
+                        />
+                        <View style={styles.shortsPlayBadge}>
+                          <Ionicons name="play-circle" size={36} color="rgba(255,255,255,0.95)" />
+                        </View>
+                      </View>
                       <View style={styles.shortsContent}>
                         <AppText style={styles.shortsTitle} numberOfLines={3}>
                           {short.title}
@@ -597,11 +557,21 @@ const styles = StyleSheet.create({
     width: CARD_WIDTH,
     gap: 12,
   },
-  videoCardImage: {
+  videoCardImageWrap: {
     width: CARD_WIDTH,
     aspectRatio: 1,
     borderRadius: 24,
-    backgroundColor: '#F3F4F6',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  videoCardImage: {
+    width: '100%',
+    height: '100%',
+  },
+  videoCardPlayBadge: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   videoCardTitle: {
     fontFamily: FONT_DEFAULT,
@@ -647,19 +617,19 @@ const styles = StyleSheet.create({
     elevation: 2,
     gap: 12,
   },
-  latestVideoImage: {
+  latestVideoImageWrap: {
     width: '100%',
     aspectRatio: 16 / 9,
     borderRadius: 24,
-    backgroundColor: '#F3F4F6',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  latestVideoImage: {
+    width: '100%',
+    height: '100%',
   },
   latestVideoOverlay: {
-    position: 'absolute',
-    top: 12, // Match padding
-    left: 12, // Match padding
-    right: 12, // Match padding
-    height: undefined, // Remove fixed height
-    aspectRatio: 16 / 9, // Match image aspect ratio
+    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1,
@@ -688,11 +658,21 @@ const styles = StyleSheet.create({
     width: SHORTS_CARD_WIDTH,
     gap: 8,
   },
-  shortsImage: {
+  shortsImageWrap: {
     width: '100%',
     aspectRatio: 3 / 4,
     borderRadius: 16,
-    backgroundColor: '#F3F4F6',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  shortsImage: {
+    width: '100%',
+    height: '100%',
+  },
+  shortsPlayBadge: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   shortsContent: {
     gap: 8,
