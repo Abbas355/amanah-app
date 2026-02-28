@@ -28,13 +28,17 @@ type CreateChannelSheetProps = {
   onClose: () => void;
 };
 
+type ProfilePictureSource = number | { uri: string } | null;
+
 export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps) {
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState<'form' | 'picture'>('form');
   const [firstName, setFirstName] = useState('Erza Bilalli');
   const [handle, setHandle] = useState('Erzablb189');
   const [pictureTab, setPictureTab] = useState<'AVATAR' | 'IMAGE'>('AVATAR');
+  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number | null>(null);
   const [coverImageUri, setCoverImageUri] = useState<string | null>(null);
+  const [profilePictureSource, setProfilePictureSource] = useState<ProfilePictureSource>(null);
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -42,7 +46,7 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [16, 9],
+      aspect: [4, 3],
       quality: 1,
     });
     if (!result.canceled) setCoverImageUri(result.assets[0].uri);
@@ -51,6 +55,34 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
   const handleClose = () => {
     setStep('form');
     onClose();
+  };
+
+  const handleCreateChannel = () => {
+    const payload = {
+      firstName,
+      handle,
+      profileImage:
+        profilePictureSource === null
+          ? null
+          : typeof profilePictureSource === 'number'
+            ? { type: 'avatar', index: AVATARS.indexOf(profilePictureSource as number) }
+            : { type: 'image', uri: (profilePictureSource as { uri: string }).uri },
+    };
+    console.log('[CreateChannel] payload:', JSON.stringify(payload, null, 2));
+    handleClose();
+  };
+
+  const canApplyPicture =
+    (pictureTab === 'AVATAR' && selectedAvatarIndex !== null) ||
+    (pictureTab === 'IMAGE' && coverImageUri !== null);
+
+  const handleApplyPicture = () => {
+    if (pictureTab === 'AVATAR' && selectedAvatarIndex !== null) {
+      setProfilePictureSource(AVATARS[selectedAvatarIndex]);
+    } else if (pictureTab === 'IMAGE' && coverImageUri) {
+      setProfilePictureSource({ uri: coverImageUri });
+    }
+    setStep('form');
   };
 
   const renderFormStep = () => (
@@ -67,7 +99,13 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
 
       <View style={styles.avatarSection}>
         <View style={styles.avatarPlaceholder}>
-          <AppText style={styles.avatarInitials}>EB</AppText>
+          {profilePictureSource ? (
+            <Image source={profilePictureSource} style={styles.avatarImage} contentFit="cover" />
+          ) : (
+            <AppText style={styles.avatarInitials}>
+              {firstName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?'}
+            </AppText>
+          )}
         </View>
       </View>
 
@@ -96,7 +134,7 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
         <Pressable style={styles.cancelButton} onPress={handleClose}>
           <AppText style={styles.cancelButtonText}>Cancel</AppText>
         </Pressable>
-        <Pressable style={styles.createButton} onPress={handleClose}>
+        <Pressable style={styles.createButton} onPress={handleCreateChannel}>
           <AppText style={styles.createButtonText}>Create Channel</AppText>
         </Pressable>
       </View>
@@ -126,12 +164,26 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
         {pictureTab === 'AVATAR' ? (
           <View style={styles.avatarGrid}>
             {AVATARS.map((avatar, index) => (
-              <Pressable key={index} style={styles.avatarGridItem}>
-                <Image source={avatar} style={styles.avatarGridImage} contentFit="cover" />
+              <Pressable
+                key={`avatar-${index}`}
+                style={[
+                  styles.avatarGridItem,
+                  styles.avatarGridItemBorder,
+                  selectedAvatarIndex === index && styles.avatarGridItemSelected,
+                ]}
+                onPress={() => setSelectedAvatarIndex(index)}
+              >
+                <Image
+                  key={`av-img-${index}`}
+                  source={avatar}
+                  style={styles.avatarGridImage}
+                  contentFit="cover"
+                  cachePolicy="memory"
+                />
               </Pressable>
             ))}
           </View>
-        ) : (
+        ) : !coverImageUri ? (
           <View style={styles.uploadArea}>
             <Pressable style={styles.uploadBox} onPress={pickImage}>
               <Ionicons name="cloud-upload-outline" size={48} color={BRAND_BLUE} />
@@ -141,21 +193,41 @@ export function CreateChannelSheet({ visible, onClose }: CreateChannelSheetProps
                 <AppText style={styles.uploadActionButtonText}>Upload</AppText>
               </View>
             </Pressable>
-            {coverImageUri && (
-              <Image source={{ uri: coverImageUri }} style={styles.coverPreview} contentFit="cover" />
-            )}
+          </View>
+        ) : (
+          <View style={styles.pictureContentInner}>
+            <View style={styles.previewContainer}>
+              <Image source={{ uri: coverImageUri }} style={styles.previewImage} contentFit="cover" />
+            </View>
+            <View style={styles.actionsRow}>
+              <Pressable onPress={() => setCoverImageUri(null)}>
+                <AppText style={styles.actionTextBlue}>Delete Photo</AppText>
+              </Pressable>
+              <Pressable style={styles.changeButton} onPress={pickImage}>
+                <AppText style={styles.actionTextBlue}>Change Photo</AppText>
+              </Pressable>
+              <Pressable style={styles.applyButton} onPress={handleApplyPicture}>
+                <AppText style={styles.applyButtonText}>Apply</AppText>
+              </Pressable>
+            </View>
           </View>
         )}
       </View>
 
-      <View style={[styles.footer, { paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }]}>
-        <Pressable style={styles.cancelButton} onPress={() => setStep('form')}>
-          <AppText style={styles.cancelButtonText}>Cancel</AppText>
-        </Pressable>
-        <Pressable style={styles.createButton} onPress={() => setStep('form')}>
-          <AppText style={styles.createButtonText}>Create Channel</AppText>
-        </Pressable>
-      </View>
+      {!(pictureTab === 'IMAGE' && coverImageUri) && (
+        <View style={[styles.footer, { paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }]}>
+          <Pressable style={styles.cancelButton} onPress={() => setStep('form')}>
+            <AppText style={styles.cancelButtonText}>Cancel</AppText>
+          </Pressable>
+          <Pressable
+            style={[styles.createButton, !canApplyPicture && styles.buttonDisabled]}
+            onPress={handleApplyPicture}
+            disabled={!canApplyPicture}
+          >
+            <AppText style={[styles.createButtonText, !canApplyPicture && styles.buttonTextDisabled]}>Apply</AppText>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 
@@ -241,6 +313,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E7EB',
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
   },
   avatarInitials: {
     fontFamily: FONT_SEMIBOLD,
@@ -366,6 +443,19 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#F3F4F6',
   },
+  avatarGridItemBorder: {
+    borderWidth: 3,
+    borderColor: 'transparent',
+  },
+  avatarGridItemSelected: {
+    borderColor: BRAND_BLUE,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
+  },
+  buttonTextDisabled: {
+    color: '#9CA3AF',
+  },
   avatarGridImage: {
     width: '100%',
     height: '100%',
@@ -418,5 +508,61 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 16,
     backgroundColor: '#F3F4F6',
+  },
+  pictureContentInner: {
+    flex: 1,
+  },
+  previewContainer: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#9CA3AF',
+    borderStyle: 'dashed',
+    marginBottom: 24,
+  },
+  previewImage: {
+    width: '100%',
+    height: '100%',
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 8,
+    marginBottom: 30,
+  },
+  actionTextBlue: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 13,
+    color: BRAND_BLUE,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+  },
+  changeButton: {
+    borderWidth: 1,
+    borderColor: BRAND_BLUE,
+    height: 32,
+    paddingHorizontal: 16,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  applyButton: {
+    backgroundColor: BRAND_BLUE,
+    height: 32,
+    paddingHorizontal: 24,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  applyButtonText: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 13,
+    color: '#fff',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
 });
