@@ -1,23 +1,35 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  Dimensions,
-  Pressable,
-  Image as RNImage,
-  ScrollView,
-  StyleSheet,
-  View,
+    Dimensions,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    View
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
+import { ChannelDetailsCard } from '@/components/channel-details-card';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { ScreenGradient } from '@/components/screen-gradient';
 import { FONT_BOLD, FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
+import type { ChannelDetails } from '@/types/channel';
+import { MOCK_CHANNEL_WITH_DATA } from '@/types/channel';
 
 const BRAND_BLUE = '#60A5FA';
+
+/** Mock channel map for demo - keyed by id. Replace with API fetch later. */
+const CHANNEL_MAP: Record<string, ChannelDetails> = {
+  '1': MOCK_CHANNEL_WITH_DATA,
+  '2': { ...MOCK_CHANNEL_WITH_DATA, id: '2', name: 'Twinies', handle: 'twinies1', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&fit=crop', banner: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1200&fit=crop', subscribers: 890, totalViews: 12000, videoCount: 12 },
+  '3': { ...MOCK_CHANNEL_WITH_DATA, id: '3', banner: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1200&fit=crop', subscribers: 2500, totalViews: 78000, videoCount: 38 },
+  '4': { ...MOCK_CHANNEL_WITH_DATA, id: '4', name: 'Twinies', handle: 'twinies1', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&fit=crop', banner: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=1200&fit=crop', subscribers: 420, totalViews: 8000, videoCount: 8 },
+  '5': { ...MOCK_CHANNEL_WITH_DATA, id: '5', banner: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1200&fit=crop', subscribers: 3200, totalViews: 95000, videoCount: 62 },
+  '6': { ...MOCK_CHANNEL_WITH_DATA, id: '6', name: 'Twinies', handle: 'twinies1', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&fit=crop', banner: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1200&fit=crop', subscribers: 150, totalViews: 3000, videoCount: 3 },
+};
 const PROFILE_IMAGE = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop';
 const CARD_IMAGE_1 = 'https://picsum.photos/id/1018/600/600';
 const CARD_IMAGE_2 = 'https://picsum.photos/id/1060/600/600';
@@ -137,6 +149,11 @@ export default function ChannelProfileScreen() {
   const insets = useSafeAreaInsets();
   const [profileTab, setProfileTab] = useState<ProfileTab>('Videos');
 
+  const channel = useMemo(
+    () => (params.id ? CHANNEL_MAP[params.id] ?? MOCK_CHANNEL_WITH_DATA : MOCK_CHANNEL_WITH_DATA),
+    [params.id]
+  );
+
   return (
     <View style={styles.container}>
       <DashboardHeader />
@@ -150,49 +167,25 @@ export default function ChannelProfileScreen() {
           <ScreenGradient />
           <Pressable onPress={() => router.back()} style={styles.backRow}>
             <Ionicons name="chevron-back" size={20} color="#111827" />
-            <AppText style={styles.backRowLabel}>Personal Profile</AppText>
+            <AppText style={styles.backRowLabel}>Channel</AppText>
           </Pressable>
+
           <View style={styles.section}>
-            {/* Cover Card */}
+            {/* Banner (from backend) */}
             <View style={styles.coverWrap}>
-              <AppText style={styles.coverText}>رمضان كريم</AppText>
+              {channel.banner ? (
+                <Image source={{ uri: channel.banner }} style={StyleSheet.absoluteFill} contentFit="cover" />
+              ) : (
+                <AppText style={styles.coverText}>رمضان كريم</AppText>
+              )}
             </View>
 
-            {/* User Info Bar: PFP + name + @handle */}
-            <View style={styles.userBar}>
-              <View style={styles.userAvatarWrap}>
-                <Image source={{ uri: PROFILE_IMAGE }} style={styles.userAvatar} contentFit="cover" />
-              </View>
-              <View style={styles.userInfo}>
-                <View style={styles.nameHandleWrap}>
-                  <View style={styles.nameRow}>
-                    <AppText style={styles.userName}>Erza Bilalli</AppText>
-                    <RNImage
-                      source={require('@/assets/images/verified.png')}
-                      style={styles.verifiedBadge}
-                      resizeMode="contain"
-                    />
-                  </View>
-                  <AppText style={styles.userHandle}>@Erzabbb</AppText>
-                </View>
-              </View>
-            </View>
-
-            {/* Followers / Following below PFP and names */}
-            <View style={styles.followStatsRow}>
-              <AppText style={styles.followStats}>21 Followers | 40 Following</AppText>
-            </View>
+            {/* Channel details from backend (avatar, name, handle, description, subscribers, totalViews, videoCount) - same layout as My Channel */}
+            <ChannelDetailsCard channel={channel} showAvatar />
 
             <Pressable style={styles.primaryButton}>
               <AppText style={styles.primaryButtonText}>Follow</AppText>
             </Pressable>
-
-            <View style={styles.bioBlock}>
-              <AppText style={styles.bioText}>In remembrance of Allah, hearts find peace 🌙🕋</AppText>
-              <AppText style={styles.bioMeta}>25.02.1999</AppText>
-              <AppText style={styles.bioMeta}>Married</AppText>
-              <AppText style={styles.bioMeta}>+383 44 999 211</AppText>
-            </View>
           </View>
 
           {/* Profile Tabs Switcher - fixed width */}

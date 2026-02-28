@@ -6,22 +6,24 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  Dimensions,
-  Pressable,
-  Image as RNImage,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
+    Dimensions,
+    Pressable,
+    Image as RNImage,
+    ScrollView,
+    StyleSheet,
+    TextInput,
+    View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, FeGaussianBlur, FeOffset, Filter, G, Line, Path, Rect, Text as SvgText } from 'react-native-svg';
 
 import { AppText } from '@/components/app-text';
+import { ChannelDetailsCard } from '@/components/channel-details-card';
 import { CreateChannelSheet } from '@/components/create-channel-sheet';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { ScreenGradient } from '@/components/screen-gradient';
 import { FONT_DEFAULT, FONT_SEMIBOLD } from '@/constants/fonts';
+import { MOCK_CHANNEL_EMPTY, MOCK_CHANNEL_WITH_DATA } from '@/types/channel';
 
 const BRAND_BLUE = '#60A5FA';
 const PROFILE_IMAGE = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop';
@@ -1024,6 +1026,11 @@ export default function ProfileScreen() {
             ) : profileTab === 'MY CHANNEL' ? (
               demoType !== 'none' ? (
                 <View style={styles.videosSection}>
+                  {/* Channel details from backend response */}
+                  <ChannelDetailsCard
+                    channel={demoType === 'full' ? MOCK_CHANNEL_WITH_DATA : MOCK_CHANNEL_EMPTY}
+                    showAvatar
+                  />
                   {/* Sub Tabs */}
                   <View style={styles.subTabsWrap}>
                     {['Videos', 'Shorts', 'Post'].map((tab) => (
