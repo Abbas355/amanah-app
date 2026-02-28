@@ -1,12 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import * as DocumentPicker from 'expo-document-picker';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
+    Alert,
     Dimensions,
+    Platform,
     Pressable,
     Image as RNImage,
     ScrollView,
@@ -743,6 +746,9 @@ export default function ProfileScreen() {
   const [isAnalyticsNoDataDemo, setIsAnalyticsNoDataDemo] = useState(false);
   const [isAnalyticsWithDataDemo, setIsAnalyticsWithDataDemo] = useState(false);
   const [analyticsSubTab, setAnalyticsSubTab] = useState<AnalyticsSubTab>('Overview');
+  const [shareThoughts, setShareThoughts] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<DocumentPicker.DocumentPickerResult | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -792,6 +798,59 @@ export default function ProfileScreen() {
     ? savedProfile.status.map((id) => STATUS_ID_TO_LABEL[id]).filter(Boolean).join(', ')
     : null;
   const displayPhone = savedProfile?.phone?.trim() || null;
+
+  const handleAttachFile = useCallback(async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: '*/*',
+        copyToCacheDirectory: true,
+      });
+      if (result.canceled === false) {
+        setAttachedFile(result);
+      }
+    } catch (_) {}
+  }, []);
+
+  const handleShareSubmit = useCallback(() => {
+    const payload = {
+      text: shareThoughts,
+      file: attachedFile && attachedFile.canceled === false && attachedFile.assets?.[0]
+        ? { name: attachedFile.assets[0].name, size: attachedFile.assets[0].size, uri: attachedFile.assets[0].uri, mimeType: attachedFile.assets[0].mimeType }
+        : null,
+    };
+    console.log('[Share] submitted:', JSON.stringify(payload, null, 2));
+    setShareThoughts('');
+    setAttachedFile(null);
+  }, [shareThoughts, attachedFile]);
+
+  const handleVoiceInput = useCallback(() => {
+    if (Platform.OS === 'web') {
+      const SpeechRecognition = (typeof window !== 'undefined' && (window as any).SpeechRecognition) || (window as any).webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        Alert.alert('Voice input', 'Speech recognition is not supported in this browser. Try Chrome.');
+        return;
+      }
+      setIsListening(true);
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      recognition.onresult = (event: any) => {
+        const last = event.results[event.results.length - 1];
+        if (last.isFinal && last[0]?.transcript) {
+          setShareThoughts((prev) => (prev ? `${prev} ${last[0].transcript}` : last[0].transcript));
+        }
+      };
+      recognition.onend = () => setIsListening(false);
+      recognition.onerror = () => setIsListening(false);
+      recognition.start();
+    } else {
+      Alert.alert(
+        'Voice input',
+        'Voice input works in the web app (expo start --web) or in a development build. Type your thoughts using the keyboard here.'
+      );
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -864,26 +923,57 @@ export default function ProfileScreen() {
               Feel free to share{'\n'}your thoughts
             </AppText>
 
-            {/* // its just ui now */}
+            {attachedFile && attachedFile.canceled === false && attachedFile.assets?.[0] && (
+              <View style={styles.attachedFileBox}>
+                <View style={styles.attachedFileIconWrap}>
+                  <Ionicons name="document-attach" size={22} color={BRAND_BLUE} />
+                </View>
+                <View style={styles.attachedFileInfo}>
+                  <AppText style={styles.attachedFileName} numberOfLines={1}>
+                    {attachedFile.assets[0].name}
+                  </AppText>
+                  <AppText style={styles.attachedFileMeta}>
+                    {attachedFile.assets[0].size != null
+                      ? `${(attachedFile.assets[0].size / 1024).toFixed(1)} KB`
+                      : attachedFile.assets[0].mimeType ?? 'File attached'}
+                  </AppText>
+                </View>
+                <Pressable
+                  style={styles.attachedFileRemove}
+                  onPress={() => setAttachedFile(null)}
+                  hitSlop={8}
+                >
+                  <Ionicons name="close-circle" size={24} color="#9CA3AF" />
+                </Pressable>
+              </View>
+            )}
+
             <View style={styles.shareBox}>
-              <View style={styles.shareIconWrap}>
+              <Pressable style={styles.shareIconWrap} onPress={handleAttachFile}>
                 <RNImage
                   source={require('@/assets/images/icons/url.png')}
                   style={styles.shareUrlIcon}
                   resizeMode="contain"
                 />
-              </View>
-              <AppText style={styles.shareHint} numberOfLines={2}>
-                Insights, reflections, and{'\n'}ideas are welcome
-              </AppText>
-              <Pressable style={styles.shareMic}>
+              </Pressable>
+              <TextInput
+                style={styles.shareInput}
+                placeholder="Insights, reflections, and ideas are welcome"
+                placeholderTextColor="#9CA3AF"
+                value={shareThoughts}
+                onChangeText={setShareThoughts}
+                multiline
+                maxLength={500}
+                editable
+              />
+              <Pressable style={styles.shareMic} onPress={handleVoiceInput}>
                 <RNImage
                   source={require('@/assets/images/icons/mic.png')}
                   style={styles.shareMicIcon}
                   resizeMode="contain"
                 />
               </Pressable>
-              <Pressable style={styles.shareSend}>
+              <Pressable style={styles.shareSend} onPress={handleShareSubmit}>
                 <Ionicons name="arrow-up" size={24} color={BRAND_BLUE} />
               </Pressable>
             </View>
@@ -1373,6 +1463,44 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     lineHeight: 34,
   },
+  attachedFileBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0F9FF',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#BAE6FD',
+    gap: 12,
+  },
+  attachedFileIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  attachedFileInfo: {
+    flex: 1,
+    minWidth: 0,
+  },
+  attachedFileName: {
+    fontFamily: FONT_SEMIBOLD,
+    fontSize: 14,
+    color: '#111827',
+  },
+  attachedFileMeta: {
+    fontFamily: FONT_DEFAULT,
+    fontSize: 12,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  attachedFileRemove: {
+    padding: 4,
+  },
   shareBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1402,11 +1530,14 @@ const styles = StyleSheet.create({
     height: 20,
     tintColor: '#111827',
   },
-  shareHint: {
+  shareInput: {
     fontFamily: FONT_DEFAULT,
     flex: 1,
     fontSize: 13,
     color: '#111827',
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    minHeight: 40,
   },
   shareMic: {
     padding: 8,
